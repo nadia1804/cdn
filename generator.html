@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GMP Component Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ⚡ Bootstrap 3 CDN -->
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <style>
+    /* ───────────────────────────────────────────────
+       Small custom layer on top of Bootstrap 3
+       ─────────────────────────────────────────────── */
+    .container       { max-width:800px; }
+    textarea         { resize:vertical; }
+    code             { white-space:pre; }
+    fieldset         { margin-bottom:25px; border:1px solid #ddd; padding:15px; }
+    fieldset legend  { width:auto; padding:0 5px; font-size:16px; font-weight:600; }
+    .copy-badge      { color:#3c763d; font-weight:600; visibility:hidden; margin-left:.4em; }
+    [hidden]         { display:none!important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="page-header">GMP Markup Generator</h1>
+
+  <!-- 1️⃣ component selector -->
+  <div class="form-group">
+    <label for="component">Component Type</label>
+    <select id="component" class="form-control">
+      <option value="callout">Callout (@callout)</option>
+      <option value="button">Button (@button)</option>
+      <option value="collapse">Dropdown / Collapse (@dropdown)</option>
+      <option value="guidelist">Guide List (@guidelist)</option>
+      <option value="reference">Reference Block (@reference)</option>
+      <option value="tab">Tabs (@tab)</option>
+    </select>
+  </div>
+
+  <!-- 2️⃣ dynamic options mount here -->
+  <div id="options"></div>
+
+  <!-- 3️⃣ output -->
+  <div class="form-group">
+    <label for="result">
+      Generated Markup
+      <span id="copied" class="copy-badge">copied ✔</span>
+    </label>
+    <textarea id="result" class="form-control" readonly></textarea>
+  </div>
+</div><!-- /.container -->
+
+
+<!-- jQuery + Bootstrap JS (only for Bootstrap widgets; logic is vanilla) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+/* ============================================================
+   Ultra-mini template factory · Bootstrap 3 Edition
+   ============================================================ */
+
+/* keep our own $q so we don’t collide with jQuery’s $ */
+const $q = (sel, ctx = document) => ctx.querySelector(sel);
+
+const optionsEl = $q('#options');
+const resultEl  = $q('#result');
+const copiedEl  = $q('#copied');
+
+/* util: copy to clipboard + show badge */
+function copyAndFlash(txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).catch(()=>{});
+  }
+  copiedEl.style.visibility = 'visible';
+  setTimeout(() => copiedEl.style.visibility = 'hidden', 1600);
+}
+
+/* ---------- HTML template factory ---------- */
+const T = {
+  callout: ({ variant, message }) => `<div class="gmp_alert alert_${variant}">
+  <div class="alert_message">
+    ${message || `A simple ${variant} alert—check it out!`}
+  </div>
+</div>`,
+
+  button: ({ sizes, extras, label, href, icon }) => {
+    const cls   = ['gmp_button', ...sizes, ...extras].join(' ');
+    const glyph = icon
+      ? `<svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"></path></svg>`
+      : '';
+    return `<a class="${cls}" href="${href || '#'}">${glyph}${label}</a>`;
+  },
+
+  collapse: ({ panels }) => {
+    const items = panels.map(p => `
+  <div class="collapse_panel">
+    <div class="collapse_header">
+      <div class="collapse_title">${p.title}</div>
+    </div>
+    <div class="collapse_content">${p.content}</div>
+  </div>`).join('\n');
+    return `<div class="gmp_collapse">${items}
+</div>`;
+  },
+
+  guidelist: ({ steps }) => {
+    const lis = steps.map(t => `    <li><p>${t}</p></li>`).join('\n');
+    return `<div class="guide_list">
+  <ol>
+${lis}
+  </ol>
+</div>`;
+  },
+
+  reference: ({ lines }) => {
+    const body = lines.join('<br/>\n  ');
+    return `<div class="post_reference">
+  <strong>Reference:</strong>
+  ${body}
+</div>`;
+  },
+
+  tab: ({ tabs }) => {
+    const nav   = tabs.map((t,i) =>
+`  <button class="tab_btn${i===0?' active':''}" data-tab="${i}">${t.title}</button>`).join('\n');
+    const panes = tabs.map((t,i) =>
+`  <div class="tab_pane${i===0?' active':''}">${t.content}</div>`).join('\n');
+    return `<div class="gmp_tab">
+${nav}
+${panes}
+</div>`;
+  }
+};
+
+/* ---------- Bootstrap-flavoured form blueprints ---------- */
+const Forms = {
+  callout: () => `
+<fieldset>
+  <legend>Callout</legend>
+
+  <div class="form-group">
+    <label>Variant</label>
+    <select name="variant" class="form-control">
+      <option>info</option><option>warning</option>
+      <option>success</option><option>error</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Message</label>
+    <input name="message" class="form-control" placeholder="Text…">
+  </div>
+
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`,
+
+  button: () => `
+<fieldset>
+  <legend>Button</legend>
+
+  <div class="form-group">
+    <label>Label</label>
+    <input name="label" class="form-control" value="Button">
+  </div>
+
+  <div class="form-group">
+    <label>Href</label>
+    <input name="href" class="form-control" value="#">
+  </div>
+
+  <div class="form-group">
+    <label>Size</label>
+    <select name="size" class="form-control">
+      <option>small</option><option>medium</option><option>large</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Extras</label><br/>
+    ${['rounded','elevated','filled','filled_tonal','outlined','fab','extended','fwm']
+      .map(x => `<label class="checkbox-inline">
+                  <input type="checkbox" name="extras" value="${x}"> ${x}
+                 </label>`).join(' ')}
+  </div>
+
+  <div class="checkbox">
+    <label><input type="checkbox" name="icon"> include “+” icon</label>
+  </div>
+
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`,
+
+  collapse: () => `
+<fieldset>
+  <legend>Collapse Panels</legend>
+
+  <div id="panels"></div>
+  <button type="button" id="addPanel" class="btn btn-default">+ Panel</button>
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`,
+
+  guidelist: () => `
+<fieldset>
+  <legend>Guide Steps</legend>
+
+  <div id="steps"></div>
+  <button type="button" id="addStep" class="btn btn-default">+ Step</button>
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`,
+
+  reference: () => `
+<fieldset>
+  <legend>Reference URLs</legend>
+
+  <div class="form-group">
+    <textarea name="refs" class="form-control"
+              placeholder="https://example.com/\nhttps://second.com/"></textarea>
+  </div>
+
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`,
+
+  tab: () => `
+<fieldset>
+  <legend>Tabs</legend>
+
+  <div id="tabs"></div>
+  <button type="button" id="addTab" class="btn btn-default">+ Tab</button>
+  <button class="btn btn-primary">Generate</button>
+</fieldset>`
+};
+
+/* ---------- mount initial form & handle switches ---------- */
+$q('#component').addEventListener('change', renderForm);
+renderForm();               /* initial load */
+
+function renderForm() {
+  const type = $q('#component').value;
+  optionsEl.innerHTML = Forms[type]();
+
+  /* add dynamic list controls when needed */
+  if (type === 'collapse')  buildList('panels',  'Title', 'Content');
+  if (type === 'guidelist') buildList('steps',   'Step');
+  if (type === 'tab')       buildList('tabs',    'Title', 'Content');
+
+  /* bind the last <button> inside the fieldset as “Generate” */
+  $q('button.btn-primary', optionsEl).addEventListener('click', e => {
+    e.preventDefault();
+    generate(type);
+  });
+}
+
+/* helper to create repeat-able blocks (panels, steps, tabs) */
+function buildList(id, fieldA, fieldB) {
+  const wrap   = $q('#' + id, optionsEl);
+  const addBtn = $q('#add' + id.charAt(0).toUpperCase() + id.slice(1).replace(/s$/, ''), optionsEl);
+
+  addItem();                      /* one default entry */
+  addBtn.addEventListener('click', addItem);
+
+  function addItem() {
+    const idx = wrap.children.length + 1;
+    const div = document.createElement('div');
+    div.className = 'well well-sm';   /* Bootstrap framing */
+
+    div.innerHTML =
+      `<div class="form-group">
+         <label>${fieldA} ${idx}</label>
+         <input class="form-control">
+       </div>` +
+
+      (fieldB
+        ? `<div class="form-group">
+             <label>${fieldB}</label>
+             <textarea rows="2" class="form-control"></textarea>
+           </div>`
+        : '');
+
+    wrap.appendChild(div);
+  }
+}
+
+/* ---------- generator core ---------- */
+function generate(type) {
+  const f = optionsEl;   let html = '';
+
+  if (type === 'callout') {
+    html = T.callout({
+      variant: $q('[name="variant"]', f).value,
+      message: $q('[name="message"]', f).value.trim()
+    });
+  }
+
+  else if (type === 'button') {
+    const extras = [...f.querySelectorAll('[name="extras"]:checked')].map(el => el.value);
+    html = T.button({
+      sizes: [ $q('[name="size"]', f).value ],
+      extras,
+      label: $q('[name="label"]', f).value,
+      href:  $q('[name="href"]',  f).value,
+      icon:  $q('[name="icon"]',  f).checked
+    });
+  }
+
+  else if (type === 'collapse') {
+    const panels = [...$q('#panels', f).children].map(div => {
+      const inputs = div.querySelectorAll('input,textarea');
+      return { title: inputs[0].value || 'Collapsible', content: inputs[1].value || 'Content' };
+    });
+    html = T.collapse({ panels });
+  }
+
+  else if (type === 'guidelist') {
+    const steps = [...$q('#steps', f).querySelectorAll('input')]
+                 .map(i => i.value || 'Content');
+    html = T.guidelist({ steps });
+  }
+
+  else if (type === 'reference') {
+    const lines = $q('[name="refs"]', f).value
+                   .split(/\r?\n/)
+                   .filter(l => l.trim());
+    html = T.reference({ lines });
+  }
+
+  else if (type === 'tab') {
+    const tabs = [...$q('#tabs', f).children].map(div => {
+      const [title, content] = div.querySelectorAll('input,textarea');
+      return {
+        title:   title.value   || 'Tab',
+        content: content.value || 'Content'
+      };
+    });
+    html = T.tab({ tabs });
+  }
+
+  resultEl.value = html;
+  copyAndFlash(html);
+}
+</script>
+</body>
+</html>
