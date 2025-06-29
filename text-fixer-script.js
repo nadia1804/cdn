@@ -3,13 +3,13 @@
 // Definisikan TextFixer dan fungsi fix-nya di sini
 const TextFixer = {
   fix: function(text) {
-    let fixed = text.replace(/[^a-zA-Z0-9\s.,?!]/g, ''); // Hapus sebagian besar karakter khusus
-    fixed = fixed.replace(/\s\s+/g, ' '); // Ganti spasi ganda dengan spasi tunggal
-    return fixed.trim(); // Hapus spasi di awal/akhir
+    let fixed = text.replace(/[^a-zA-Z0-9\s.,?!]/g, ''); // Remove most special characters
+    fixed = fixed.replace(/\s\s+/g, ' '); // Replace multiple spaces with single space
+    return fixed.trim(); // Trim leading/trailing whitespace
   }
 };
 
-// Setelah TextFixer didefinisikan, tambahkan logika interaksi UI di sini
+// After TextFixer is defined, add UI interaction logic here
 document.addEventListener('DOMContentLoaded', function() {
   const inputText = document.getElementById('inputText');
   const fixAndCopyBtn = document.getElementById('fixAndCopyBtn');
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fixAndCopyBtn.addEventListener('click', function() {
     let textToFix = inputText.value;
-    let fixedText = TextFixer.fix(textToFix); // Gunakan TextFixer yang sudah didefinisikan di atas
-    
+    let fixedText = TextFixer.fix(textToFix); // Use the TextFixer defined above
+
     previewOutput.textContent = fixedText;
 
     navigator.clipboard.writeText(fixedText).then(() => {
