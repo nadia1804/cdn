@@ -146,7 +146,7 @@
             img = rawImg;
           }
 
-          const kelasClass = "kelas-" + kelas.replace(/\s+/g, "-").toLowerCase();
+          const kelasClass = "kelas-" + String(kelas);
 
           html += `
             <div class="al-card ${kelasClass}">
