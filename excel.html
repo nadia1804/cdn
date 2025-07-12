@@ -1,44 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Data dari Google Sheets</title>
+  <title>Alumni Cards</title>
   <style>
-    .container {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 10px;
-      background-color: #f9f9f9;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f7f7f7;
     }
-    h1 { font-size: 1.2em; margin: 0; }
-    span { display: block; font-weight: bold; color: #555; margin-top: 5px; }
-    p { margin-top: 5px; }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      width: 260px;
+      padding: 15px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card h1 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .card p {
+      margin-top: 10px;
+      color: #444;
+    }
+
+    #output {
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
-  <div id="output">Memuat data...</div>
+  <h2>Daftar Alumni</h2>
+  <div id="output" class="flex-container">Memuat data...</div>
 
   <script>
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZ_FV9H3ISesA2Zm056VrJWEYTiufYgzAmaMIngrDCzfLcEfs68voWcRMeZBexnmwT7brlofOm4dvD/pubhtml";
+    const proxyURL = "https://api.allorigins.win/get?url=" + encodeURIComponent(sheetURL);
 
-    fetch(sheetURL)
-      .then(res => res.text())
-      .then(html => {
+    fetch(proxyURL)
+      .then(response => response.json())
+      .then(data => {
+        const html = data.contents;
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
         const table = doc.querySelector("table");
-        const rows = table.querySelectorAll("tr");
+        const rows = table?.querySelectorAll("tr");
+
+        if (!rows || rows.length === 0) {
+          document.getElementById("output").innerText = "Data tidak ditemukan.";
+          return;
+        }
 
         let output = "";
-        for (let i = 1; i < rows.length; i++) { // skip header
+        for (let i = 0; i < rows.length; i++) {
           const cells = rows[i].querySelectorAll("td");
-          const name = cells[0]?.innerText || "";
-          const kelas = cells[1]?.innerText || "";
-          const isi = cells[2]?.innerText || "";
+          const isHeader = rows[i].querySelectorAll("th").length > 0;
+          if (isHeader || cells.length < 3) continue;
+
+          const name  = cells[0]?.innerText.trim() || "";
+          const kelas = cells[1]?.innerText.trim() || "";
+          const isi   = cells[2]?.innerText.trim() || "";
 
           output += `
-            <div class="container">
+            <div class="card">
               <h1>${name}</h1>
-              <span>${kelas}</span>
+              <span>Kelas ${kelas}</span>
               <p>${isi}</p>
             </div>
           `;
@@ -46,9 +101,9 @@
 
         document.getElementById("output").innerHTML = output;
       })
-      .catch(err => {
+      .catch(error => {
+        console.error("Error:", error);
         document.getElementById("output").innerText = "Gagal memuat data.";
-        console.error("Error:", err);
       });
   </script>
 </body>
