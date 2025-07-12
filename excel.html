@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data dari Google Sheets</title>
+  <style>
+    .container {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+    }
+    h1 { font-size: 1.2em; margin: 0; }
+    span { display: block; font-weight: bold; color: #555; margin-top: 5px; }
+    p { margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div id="output">Memuat data...</div>
+
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZ_FV9H3ISesA2Zm056VrJWEYTiufYgzAmaMIngrDCzfLcEfs68voWcRMeZBexnmwT7brlofOm4dvD/pubhtml";
+
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const table = doc.querySelector("table");
+        const rows = table.querySelectorAll("tr");
+
+        let output = "";
+        for (let i = 1; i < rows.length; i++) { // skip header
+          const cells = rows[i].querySelectorAll("td");
+          const name = cells[0]?.innerText || "";
+          const kelas = cells[1]?.innerText || "";
+          const isi = cells[2]?.innerText || "";
+
+          output += `
+            <div class="container">
+              <h1>${name}</h1>
+              <span>${kelas}</span>
+              <p>${isi}</p>
+            </div>
+          `;
+        }
+
+        document.getElementById("output").innerHTML = output;
+      })
+      .catch(err => {
+        document.getElementById("output").innerText = "Gagal memuat data.";
+        console.error("Error:", err);
+      });
+  </script>
+</body>
+</html>
