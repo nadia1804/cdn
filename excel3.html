@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kartu Alumni Modular</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .al-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #222;
+      font-size: 1.8em;
+    }
+
+    .al-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .al-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      width: 260px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .al-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .al-card-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      background-color: #ddd;
+    }
+
+    .al-card-class {
+      display: block;
+      margin-top: 6px;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .al-card-text {
+      margin-top: 10px;
+      font-size: 0.95em;
+      color: #444;
+    }
+
+    a {
+      color: #3366cc;
+      text-decoration: none;
+    }
+
+    @media screen and (max-width: 600px) {
+      .al-card {
+        width: 90%;
+      }
+
+      .al-card-img {
+        width: 70px;
+        height: 70px;
+      }
+
+      .al-card-text {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2 class="al-title">Daftar Alumni Modular</h2>
+  <div id="output" class="al-container">Memuat data...</div>
+
+  <script>
+    const sheetID = "1KitZ38J8Ho4W3g2w1kxZqQ8UPm0AXdzlSVnA5xs95aI";
+    const sheetName = "Sheet1";
+
+    // Konfigurasi fleksibel: ubah hanya di sini!
+    const schema = [
+      { key: "name", label: "Nama", type: "text" },
+      { key: "kelas", label: "Kelas", type: "badge" },
+      { key: "isi", label: "Deskripsi", type: "text" },
+      { key: "img", label: "Foto", type: "image" },
+      { key: "email", label: "Email", type: "link" }
+    ];
+
+    async function fetchAlumniData() {
+      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}&nocache=${Date.now()}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      return json.table.rows;
+    }
+
+    function parseRow(row) {
+      const data = {};
+      schema.forEach((field, index) => {
+        const raw = row.c[index]?.v || "";
+        data[field.key] = raw;
+      });
+      return data;
+    }
+
+    function generateCard(data) {
+      let html = `<div class="al-card">`;
+
+      schema.forEach(field => {
+        const value = data[field.key];
+        if (field.type === "image") {
+          const imgSrc = value && value.startsWith("http") ? value : "https://placehold.co/80";
+          html += `<img src="${imgSrc}" alt="${data.name}" class="al-card-img">`;
+        } else if (field.type === "badge") {
+          html += `<span class="al-card-class">${field.label}: ${value}</span>`;
+        } else if (field.type === "link") {
+          html += `<p class="al-card-text">${field.label}: <a href="mailto:${value}">${value}</a></p>`;
+        } else {
+          html += `<p class="al-card-text">${field.label}: ${value}</p>`;
+        }
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
+    async function renderAlumniCards() {
+      try {
+        const rows = await fetchAlumniData();
+        const html = rows.map(parseRow).map(generateCard).join("");
+        document.getElementById("output").innerHTML = html;
+      } catch (err) {
+        console.error("Gagal fetch:", err);
+        document.getElementById("output").innerText = "Gagal memuat data.";
+      }
+    }
+
+    renderAlumniCards();
+  </script>
+</body>
+</html>
