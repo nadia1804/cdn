@@ -94,11 +94,10 @@
 
     // Konfigurasi fleksibel: ubah hanya di sini!
     const schema = [
+       { key: "img", label: "Foto", type: "image" },
       { key: "name", label: "Nama", type: "text" },
       { key: "kelas", label: "Kelas", type: "badge" },
-      { key: "isi", label: "Deskripsi", type: "text" },
-      { key: "img", label: "Foto", type: "image" },
-      { key: "email", label: "Email", type: "link" }
+      { key: "isi", label: "Deskripsi", type: "text" }
     ];
 
     async function fetchAlumniData() {
