@@ -12,7 +12,7 @@
         /* Kelas untuk styling body */
         .app-body-style {
             font-family: 'Inter', sans-serif;
-            font-size: 16px; /* Ukuran font default untuk desktop */
+            font-size: 15px; /* Ukuran font default untuk desktop, sedikit lebih kecil */
             background-color: #f8f9fa; /* Bootstrap's light background */
             padding: 0;
             margin: 0;
@@ -23,6 +23,7 @@
             position: sticky;
             top: 0;
             background-color: #f9fafb; /* Warna latar belakang light gray */
+            color: #212529; /* Warna teks gelap (Bootstrap default text-dark) */
             z-index: 10; /* Pastikan di atas konten lain saat scroll */
             box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Sedikit bayangan untuk efek elevasi */
         }
@@ -39,6 +40,8 @@
         /* Menyesuaikan z-index untuk sudut persimpangan header dan kolom pertama */
         .sticky-header-th.sticky-first-col {
             z-index: 12; /* Paling tinggi agar selalu terlihat di sudut */
+            background-color: #f9fafb; /* Pastikan sudut juga light gray */
+            color: #212529; /* Pastikan teks sudut juga gelap */
         }
 
         /* Pastikan kontainer tabel memiliki scrollbar dan sel tidak terpotong oleh sticky positioning */
@@ -47,11 +50,17 @@
             overflow: auto; /* Aktifkan scrolling di kontainer */
         }
 
+        /* Kelas untuk tabel dengan garis atas dan bawah saja (Dihapus karena sekarang ingin semua garis) */
+        /* .table-top-bottom-border {
+            border-top: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+        } */
+
         /* Media Queries untuk Responsivitas (menggunakan breakpoint Bootstrap) */
         /* Small devices (potrait tablets and large phones, 576px and up) */
         @media (max-width: 767.98px) { /* Equivalent to Bootstrap's sm breakpoint */
             .app-body-style {
-                font-size: 14px; /* Perkecil ukuran font dasar */
+                font-size: 13px; /* Perkecil ukuran font dasar */
             }
             .main-content-wrapper { /* Menggunakan kelas baru untuk wrapper utama */
                 padding: 1rem; /* Kurangi padding kontainer */
@@ -59,16 +68,17 @@
             .display-4 { /* Untuk h1 */
                 font-size: 2rem; /* Perkecil ukuran judul */
             }
-            .table-cell-padding-responsive { /* Kelas untuk padding sel tabel responsif */
-                padding: 0.5rem 0.75rem !important; /* Kurangi padding sel tabel */
-                font-size: 0.75rem !important; /* Perkecil ukuran font sel tabel */
+            /* Kelas untuk padding sel tabel responsif (Bootstrap table-sm akan menyesuaikan juga) */
+            .table-cell-padding-responsive { 
+                padding: 0.5rem 0.75rem !important; 
+                font-size: 0.75rem !important; 
             }
         }
 
         /* Extra small devices (phones, less than 576px) */
         @media (max-width: 575.98px) { /* Equivalent to Bootstrap's xs breakpoint */
             .app-body-style {
-                font-size: 12px; /* Perkecil ukuran font dasar lebih lanjut */
+                font-size: 11px; /* Perkecil ukuran font dasar lebih lanjut */
             }
             .main-content-wrapper { /* Menggunakan kelas baru untuk wrapper utama */
                 padding: 0.75rem; /* Kurangi padding kontainer lebih lanjut */
@@ -76,9 +86,10 @@
             .display-4 { /* Untuk h1 */
                 font-size: 1.75rem; /* Perkecil ukuran judul lebih lanjut */
             }
-            .table-cell-padding-responsive { /* Kelas untuk padding sel tabel responsif */
-                padding: 0.4rem 0.6rem !important; /* Kurangi padding sel tabel lebih lanjut */
-                font-size: 0.7rem !important; /* Perkecil ukuran font sel tabel lebih lanjut */
+            /* Kelas untuk padding sel tabel responsif (Bootstrap table-sm akan menyesuaikan juga) */
+            .table-cell-padding-responsive { 
+                padding: 0.4rem 0.6rem !important; 
+                font-size: 0.7rem !important; 
             }
             /* Pastikan kolom pertama sticky tetap terlihat */
             .sticky-first-col {
@@ -90,16 +101,22 @@
 <body class="app-body-style">
     <!-- Mengubah div container menjadi div fullwidth dengan padding -->
     <div class="main-content-wrapper bg-white p-4 p-md-5 rounded shadow-lg mx-auto" style="max-width: 96%; margin-top: 2rem; margin-bottom: 2rem;">
-        <h1 class="display-4 text-center text-dark mb-4">Data guru</h1>
+        <h1 class="display-4 text-center text-dark mb-4">Data dari Google Sheet</h1>
         
         <!-- Indikator loading saat data sedang dimuat -->
         <div id="loading" class="text-center text-muted mb-3">Memuat data...</div>
+
+        <!-- Fitur Pencarian Teks -->
+        <div class="mb-3">
+            <label for="searchInput" class="form-label visually-hidden">Cari Teks:</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Cari di tabel..." onkeyup="filterTable()">
+        </div>
 
         <!-- Kontainer tabel, akan diisi oleh JavaScript -->
         <div id="table-container" class="table-responsive border rounded table-scroll-container">
             <!-- Elemen tabel HTML. ID 'data-table' hanya untuk identifikasi DOM,
                  script tidak perlu tahu 'nama tabel' dari spreadsheet. -->
-            <table id="data-table" class="table table-bordered table-hover mb-0">
+            <table id="data-table" class="table table-hover table-sm mb-0 table-bordered"> <!-- Added table-bordered class -->
                 <thead class="bg-light">
                     <tr id="table-header">
                         <!-- Header tabel akan diisi secara dinamis oleh JavaScript -->
@@ -147,6 +164,28 @@
         const tableBody = document.getElementById('table-body');   
         const errorMessage = document.getElementById('error-message');
         const dataTable = document.getElementById('data-table');
+        const searchInput = document.getElementById('searchInput'); // Referensi ke input pencarian
+
+        /**
+         * Fungsi untuk menyaring baris tabel berdasarkan teks input pencarian.
+         */
+        window.filterTable = function() { // Dibuat global agar bisa dipanggil dari onkeyup
+            const filter = searchInput.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                let rowVisible = false;
+                const cells = rows[i].getElementsByTagName('td');
+                for (let j = 0; j < cells.length; j++) {
+                    const cellText = cells[j].textContent || cells[j].innerText;
+                    if (cellText.toLowerCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
+                    }
+                }
+                rows[i].style.display = rowVisible ? '' : 'none';
+            }
+        }
 
         /**
          * Fungsi asinkron untuk mengambil data dari Google Sheet dan merender tabel HTML.
@@ -187,12 +226,13 @@
                 headers.forEach((header, index) => {
                     const th = document.createElement('th');
                     th.textContent = header;
-                    // Kelas Bootstrap untuk styling header: tebal, rata kiri, tengah vertikal, uppercase, muted, kecil
-                    th.classList.add('p-2', 'text-start', 'align-middle', 'text-uppercase', 'text-muted', 'small', 'fw-bold');
+                    // Kelas Bootstrap untuk styling header: tebal, rata kiri, tengah vertikal, uppercase, kecil
+                    // Warna teks diatur oleh CSS kustom .sticky-header-th
+                    th.classList.add('p-2', 'text-start', 'align-middle', 'text-uppercase', 'small', 'fw-bold');
                     
                     // Tambahkan kelas khusus untuk kolom pertama agar bisa disticky
                     if (index === 0) {
-                        th.classList.add('text-dark', 'sticky-first-col'); 
+                        th.classList.add('sticky-first-col'); 
                     }
                     // Tambahkan kelas sticky header untuk semua th
                     th.classList.add('sticky-header-th');
@@ -209,11 +249,9 @@
                         const td = document.createElement('td');
                         td.textContent = value;
                         // Kelas Bootstrap untuk styling sel data: rata kiri, tengah vertikal
-                        // Kelas 'fw-bold' telah dihapus dari sini agar isi tidak tebal
                         td.classList.add('p-3', 'text-nowrap', 'text-start', 'align-middle'); 
                         // Tambahkan kelas khusus untuk kolom pertama agar bisa disticky
                         if (index === 0) {
-                            // Kelas 'fw-bold' juga dihapus dari sini agar isi kolom pertama tidak tebal
                             td.classList.add('text-dark', 'sticky-first-col'); 
                         }
                         tr.appendChild(td);
