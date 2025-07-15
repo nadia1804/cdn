@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Konsep Sumber Sejarah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1f2937; /* gray-800 */
+            padding-top: 80px; /* Space for sticky header */
+        }
+        .concept-node {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            min-height: 100px; /* Ensure nodes have some height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease-in-out; /* Added for hover effect */
+        }
+        .concept-node:hover {
+            transform: scale(1.03); /* Subtle hover scale */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+        }
+        .main-concept {
+            background-color: #2563EB; /* Biru - Tailwind blue-700 */
+            color: white;
+        }
+        .sub-concept {
+            background-color: #A78BFA; /* Ungu Muda - Tailwind purple-400 */
+            color: white;
+        }
+        .detail-concept {
+            background-color: #6EE7B7; /* Hijau Muda - Tailwind emerald-300 */
+            color: #1f2937; /* Dark text for contrast */
+            font-size: 0.875rem; /* text-sm */
+            padding: 0.75rem 1rem; /* p-3 px-4 */
+        }
+        .arrow {
+            position: absolute;
+            background-color: #a0aec0; /* gray-400 */
+            z-index: 5;
+        }
+        .arrow-vertical {
+            width: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .arrow-horizontal {
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .arrow-head {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            z-index: 6;
+        }
+        .arrow-head-down {
+            border-width: 8px 6px 0 6px;
+            border-color: #a0aec0 transparent transparent transparent;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .arrow-head-right {
+            border-width: 6px 0 6px 8px;
+            border-color: transparent transparent transparent #a0aec0;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Responsive adjustments for arrows */
+        @media (min-width: 768px) {
+            .md\:arrow-vertical-md {
+                width: 2px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .md\:arrow-head-down-md {
+                border-width: 8px 6px 0 6px;
+                border-color: #a0aec0 transparent transparent transparent;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .md\:arrow-horizontal-md {
+                height: 2px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .md\:arrow-head-right-md {
+                border-width: 6px 0 6px 8px;
+                border-color: transparent transparent transparent #a0aec0;
+                right: -8px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="fixed top-0 left-0 w-full bg-white shadow-md p-3 flex flex-col md:flex-row items-center justify-between z-50">
+        <h1 class="text-xl font-bold text-gray-800 mb-2 md:mb-0">Peta Konsep Sejarah</h1>
+        <div class="flex items-center space-x-4">
+            <div class="flex space-x-2">
+                <button onclick="zoomOut()" class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">- Zoom Teks</button>
+                <button onclick="zoomIn()" class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">+ Zoom Teks</button>
+            </div>
+            <input type="text" id="searchInput" onkeyup="searchConcepts()" placeholder="Cari konsep..." class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+    </header>
+
+    <div id="contentWrapper">
+        <div class="container mx-auto max-w-6xl bg-white rounded-3xl shadow-xl p-6 md:p-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-8 text-[#2563EB]">Peta Konsep: Sumber Sejarah SMA Kelas X</h1>
+
+            <div class="flex flex-col items-center space-y-12">
+
+                <!-- Node: Pengertian Sumber Sejarah -->
+                <div class="concept-node main-concept w-full md:w-3/5 relative">
+                    <h2 class="text-xl md:text-2xl font-bold concept-title">1. Pengertian Sumber Sejarah</h2>
+                    <p class="text-sm md:text-base mt-2 concept-description">Segala bentuk peninggalan atau jejak dari masa lampau yang dapat memberikan informasi atau bukti tentang peristiwa yang telah terjadi. Sumber-sumber ini menjadi fondasi utama bagi sejarawan untuk merekonstruksi dan menafsirkan sejarah secara ilmiah, karena tanpa bukti yang valid, sejarah tidak dapat ditulis dengan akurat.</p>
+                    <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                    <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                </div>
+
+                <!-- Node: Klasifikasi Utama -->
+                <div class="concept-node sub-concept w-full md:w-4/5 relative">
+                    <h2 class="text-xl md:text-2xl font-bold concept-title">2. Klasifikasi Sumber Sejarah</h2>
+                    <p class="text-sm md:text-base mt-2 concept-description">Sumber sejarah dapat dikelompokkan berdasarkan dua pendekatan utama yang berbeda: jenis bentuk fisiknya (wujud konkret dari sumber) dan sifat atau kedudukannya (seberapa dekat sumber tersebut dengan peristiwa asli yang dikaji).</p>
+                    <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                    <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                </div>
+
+                <!-- Cabang: Menurut Jenisnya & Berdasarkan Sifatnya -->
+                <div class="flex flex-col md:flex-row justify-around w-full space-y-12 md:space-y-0 md:space-x-8">
+
+                    <!-- Cabang Kiri: Menurut Jenisnya -->
+                    <div class="flex flex-col items-center w-full md:w-1/2 relative">
+                        <div class="concept-node sub-concept w-full relative">
+                            <h3 class="text-lg md:text-xl font-bold concept-title">2.1. Menurut Jenisnya (Bentuk Fisik)</h3>
+                            <p class="text-sm mt-1 concept-description">Klasifikasi ini mengacu pada wujud konkret dari sumber sejarah itu sendiri, yang dapat diamati atau didokumentasikan secara langsung.</p>
+                            <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                            <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                        </div>
+                        <div class="flex flex-col items-center space-y-8 mt-12">
+                            <div class="concept-node detail-concept w-full relative">
+                                <h4 class="font-semibold concept-title">2.1.1. Sumber Tertulis</h4>
+                                <p class="concept-description">Informasi sejarah yang terekam dalam bentuk tulisan, teks, angka, atau simbol pada berbagai media. Contoh: Prasasti (tulisan di batu/logam), Dokumen resmi (surat, laporan), Naskah Kuno (kitab, babad), Surat Kabar/Majalah sezaman.</p>
+                                <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                                <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                            </div>
+                            <div class="concept-node detail-concept w-full relative">
+                                <h4 class="font-semibold concept-title">2.1.2. Sumber Lisan</h4>
+                                <p class="concept-description">Informasi sejarah yang diperoleh melalui penuturan langsung dari pelaku atau saksi mata peristiwa sejarah. Sumber ini bersifat verbal dan seringkali membutuhkan proses wawancara. Contoh: Wawancara dengan veteran perang, Tradisi Lisan (cerita rakyat, legenda), Rekaman Suara pidato.</p>
+                                <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                                <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                            </div>
+                            <div class="concept-node detail-concept w-full">
+                                <h4 class="font-semibold concept-title">2.1.3. Sumber Benda (Artefak)</h4>
+                                <p class="concept-description">Benda-benda fisik peninggalan masa lampau yang memberikan petunjuk tentang kehidupan, kebudayaan, dan teknologi masyarakat di masa lalu. Contoh: Bangunan (Candi, Benteng), Perkakas (alat rumah tangga, senjata), Patung/Arca, Fosil, Gerabah, Perhiasan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cabang Kanan: Berdasarkan Sifatnya -->
+                    <div class="flex flex-col items-center w-full md:w-1/2 relative">
+                        <div class="concept-node sub-concept w-full relative">
+                            <h3 class="text-lg md:text-xl font-bold concept-title">2.2. Berdasarkan Sifatnya (Kedudukan)</h3>
+                            <p class="text-sm mt-1 concept-description">Klasifikasi ini mengacu pada hubungan sumber dengan peristiwa sejarah yang dikaji, khususnya seberapa dekat sumber tersebut dengan kejadian aslinya.</p>
+                            <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                            <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                        </div>
+                        <div class="flex flex-col items-center space-y-8 mt-12">
+                            <div class="concept-node detail-concept w-full relative">
+                                <h4 class="font-semibold concept-title">2.2.1. Sumber Primer (Utama/Asli)</h4>
+                                <p class="concept-description">Kesaksian langsung dari seseorang yang mengalami, menyaksikan, atau terlibat langsung dalam peristiwa. Dibuat pada saat peristiwa atau tidak lama setelahnya. Contoh: Naskah Proklamasi tulisan tangan Soekarno, foto asli peristiwa, hasil wawancara langsung pelaku.</p>
+                                <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                                <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                            </div>
+                            <div class="concept-node detail-concept w-full relative">
+                                <h4 class="font-semibold concept-title">2.2.2. Sumber Sekunder (Kedua)</h4>
+                                <p class="concept-description">Karya yang dibuat setelah peristiwa berlalu, menganalisis dan menginterpretasikan sumber primer. Penulis tidak terlibat langsung. Contoh: Buku Sejarah, Jurnal Ilmiah, Biografi (ditulis orang lain), Skripsi/Tesis.</p>
+                                <div class="arrow arrow-vertical h-12 bottom-[-48px] md:h-16 md:bottom-[-64px]"></div>
+                                <div class="arrow-head arrow-head-down bottom-[-48px] md:bottom-[-64px]"></div>
+                            </div>
+                            <div class="concept-node detail-concept w-full">
+                                <h4 class="font-semibold concept-title">2.2.3. Sumber Tersier (Ketiga)</h4>
+                                <p class="concept-description">Kompilasi atau ringkasan informasi dari sumber primer dan sekunder. Umumnya sebagai pengantar awal dan tidak melakukan penelitian langsung. Contoh: Buku Teks Pelajaran, Ensiklopedia Umum, Bibliografi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Node: Pentingnya Klasifikasi -->
+                <div class="concept-node main-concept w-full md:w-3/5 mt-12">
+                    <h2 class="text-xl md:text-2xl font-bold concept-title">3. Pentingnya Klasifikasi Sumber Sejarah</h2>
+                    <ul class="list-disc list-inside text-sm md:text-base mt-2 text-left concept-description">
+                        <li><strong>Menentukan Keandalan:</strong> Membantu sejarawan menilai seberapa otentik dan dapat dipercaya suatu informasi yang ditemukan.</li>
+                        <li><strong>Membangun Argumen:</strong> Memungkinkan sejarawan menyusun interpretasi yang kuat dan berbasis bukti yang relevan.</li>
+                        <li><strong>Menghindari Bias:</strong> Dengan membandingkan berbagai jenis sumber, sejarawan dapat mengungkap sudut pandang yang berbeda dan meminimalkan bias dalam penulisan sejarah.</li>
+                        <li><strong>Dasar Heuristik:</strong> Merupakan langkah awal yang krusial dalam metode penelitian sejarah, yaitu proses pengumpulan sumber yang sistematis dan terarah.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFontSizeMultiplier = 1.0;
+        // Store initial font sizes in rem units
+        const fontElementsConfig = [
+            { selector: '.concept-title', initialRemSize: null },
+            { selector: '.concept-description', initialRemSize: null }
+        ];
+
+        // Function to initialize base font sizes
+        function initializeBaseFontSizes() {
+            const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+            fontElementsConfig.forEach(item => {
+                const firstEl = document.querySelector(item.selector);
+                if (firstEl) {
+                    // Get the computed font size in pixels and convert to rem
+                    const basePxSize = parseFloat(getComputedStyle(firstEl).fontSize);
+                    item.initialRemSize = basePxSize / rootFontSize;
+                }
+            });
+        }
+
+        // Function to apply zoom based on currentFontSizeMultiplier
+        function applyTextZoom() {
+            fontElementsConfig.forEach(item => {
+                document.querySelectorAll(item.selector).forEach(el => {
+                    if (item.initialRemSize !== null) {
+                        el.style.fontSize = `${item.initialRemSize * currentFontSizeMultiplier}rem`;
+                    }
+                });
+            });
+        }
+
+        // Zoom in function
+        function zoomIn() {
+            currentFontSizeMultiplier = Math.min(currentFontSizeMultiplier + 0.1, 2.0); // Max zoom 2.0
+            applyTextZoom();
+        }
+
+        // Zoom out function
+        function zoomOut() {
+            currentFontSizeMultiplier = Math.max(currentFontSizeMultiplier - 0.1, 0.7); // Min zoom 0.7
+            applyTextZoom();
+        }
+
+        // Search concepts function
+        function searchConcepts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const conceptNodes = document.querySelectorAll('.concept-node');
+
+            conceptNodes.forEach(node => {
+                const nodeText = node.innerText.toLowerCase();
+                if (nodeText.includes(searchTerm)) {
+                    node.style.display = 'flex'; // Show the node
+                } else {
+                    node.style.display = 'none'; // Hide the node
+                }
+            });
+        }
+
+        // Initialize base font sizes and apply initial zoom on window load
+        window.onload = function() {
+            initializeBaseFontSizes();
+            applyTextZoom(); // Apply initial zoom level (1.0)
+        };
+    </script>
+
+</body>
+</html>
