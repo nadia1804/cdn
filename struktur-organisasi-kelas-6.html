@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kartu Alumni</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .al-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #222;
+      font-size: 1.8em;
+    }
+
+    .al-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .al-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      width: 260px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .al-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .al-card-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      background-color: #ddd;
+    }
+
+    .al-card-name {
+      margin: 0;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    .al-card-class {
+      display: block;
+      margin-top: 6px;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .al-card-text {
+      margin-top: 10px;
+      font-size: 0.95em;
+      color: #444;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 600px) {
+      .al-card {
+        width: 90%;
+      }
+
+      .al-card-img {
+        width: 70px;
+        height: 70px;
+      }
+
+      .al-card-name {
+        font-size: 1.1em;
+      }
+
+      .al-card-text {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2 class="al-title">Daftar Alumni</h2>
+  <div id="output" class="al-container">Memuat data...</div>
+
+  <script>
+    const sheetID = "2PACX-1vTUiRo_wYcHtxpq6sIUt45gHdyVppVKLubFR26YfvzKUtrM9yS0T29tTPHaDdvx5WsHtywHE3yDB3qg"; // Ganti sesuai spreadsheet kamu
+    const sheetName = "Sheet1";
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}&nocache=${Date.now()}`;
+
+    fetch(url)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+
+        let html = "";
+        rows.forEach(row => {
+          const A  = row.c[0]?.v || "";
+          const B = row.c[1]?.v || "";
+          const C   = row.c[2]?.v || "";
+
+          let img = "https://placehold.co/80";
+          const rawImg = row.c[3]?.v?.trim();
+          if (rawImg && rawImg.length > 5 && rawImg.startsWith("http")) {
+            img = rawImg;
+          }
+
+          html += `
+            <div class="al-card">
+              <img src="${img}" alt="Foto ${A}" class="al-card-img">
+              <h1 class="al-card-name">${B}</h1>
+              <span class="al-card-class">Kelas ${C}</span>
+              <p class="al-card-text">${C}</p>
+            </div>
+          `;
+        });
+
+        document.getElementById("output").innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Gagal fetch:", err);
+        document.getElementById("output").innerText = "Gagal memuat data.";
+      });
+  </script>
+</body>
+</html>
