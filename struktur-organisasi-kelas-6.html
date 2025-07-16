@@ -100,39 +100,38 @@
     const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}&nocache=${Date.now()}`;
 
     fetch(url)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table.rows;
 
-        let html = "";
-        rows.forEach(row => {
-          const A  = row.c[0]?.v || "";
-          const B = row.c[1]?.v || "";
-          const C   = row.c[2]?.v || "";
+    let html = "";
+    rows.slice(1).forEach(row => { // Lewati header
+      const nama = row.c[0]?.v || "";
+      const jabatan = row.c[1]?.v || "";
+      const fotoUrl = row.c[2]?.v?.trim() || "";
 
-          let img = "https://placehold.co/80";
-          const rawImg = row.c[3]?.v?.trim();
-          if (rawImg && rawImg.length > 5 && rawImg.startsWith("http")) {
-            img = rawImg;
-          }
+      let img = "https://placehold.co/80"; // Placeholder default
+      if (fotoUrl.length > 5 && fotoUrl.startsWith("http")) {
+        img = fotoUrl;
+      }
 
-          html += `
-            <div class="al-card">
-              <img src="${img}" alt="Foto ${A}" class="al-card-img">
-              <h1 class="al-card-name">${B}</h1>
-              <span class="al-card-class">Kelas ${C}</span>
-              <p class="al-card-text">${C}</p>
-            </div>
-          `;
-        });
+      html += `
+        <div class="al-card">
+          <img src="${img}" alt="Foto ${nama}" class="al-card-img">
+          <h1 class="al-card-name">${nama}</h1>
+          <span class="al-card-class">${jabatan}</span>
+          <p class="al-card-text">${jabatan}</p>
+        </div>
+      `;
+    });
 
-        document.getElementById("output").innerHTML = html;
-      })
-      .catch(err => {
-        console.error("Gagal fetch:", err);
-        document.getElementById("output").innerText = "Gagal memuat data.";
-      });
+    document.getElementById("output").innerHTML = html;
+  })
+  .catch(err => {
+    console.error("Gagal fetch:", err);
+    document.getElementById("output").innerText = "Gagal memuat data.";
+  });
   </script>
 </body>
 </html>
