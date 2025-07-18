@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer PPG</title>
+    <title>Timer Pembelajaran - Desain 4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- PWA: Link to manifest.json -->
@@ -42,6 +42,7 @@
             padding: 2.5rem; /* Add padding to the container itself */
             align-items: center; /* Center content horizontally */
             justify-content: space-evenly; /* Distribute content vertically */
+            position: relative; /* For dropdown absolute positioning */
         }
         .main-timers-wrapper {
             display: flex;
@@ -109,19 +110,19 @@
             color: #2d3748;
         }
         .dropdown-container {
+            position: absolute; /* Position dropdown absolutely within timer-container */
+            top: 20px; /* Adjust top positioning as needed */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
             width: 100%;
             max-width: 250px; /* Keep max-width for dropdown */
-            /* margin-bottom: 2rem; - Removed as space-evenly handles vertical distribution */
+            z-index: 20; /* Ensure it's above other content */
         }
-        .dropdown-container label {
-            font-weight: 600;
-            color: #2c5282; /* Dark blue for label */
-        }
-        .dropdown-container select {
+        .dropdown-trigger {
             width: 100%;
             padding: 0.75rem 1rem;
             border-radius: 0.75rem;
@@ -129,12 +130,45 @@
             background-color: #eef2ff;
             font-size: 1rem;
             color: #2c5282;
-            appearance: none; /* Remove default arrow */
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%232c5282%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.5em;
+            text-align: center;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .dropdown-trigger:hover {
+            background-color: #e2e8f0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 10px); /* Position below the trigger with some gap */
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 100%;
+            max-height: 200px; /* Limit height for scroll if many options */
+            overflow-y: auto;
+            z-index: 20; /* Ensure it's above other content */
+            border: 1px solid #a5b4fc;
+        }
+        .dropdown-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            color: #2c5282;
+            transition: background-color 0.1s ease-in-out;
+            display: block; /* Make each option a block */
+        }
+        .dropdown-option:hover {
+            background-color: #eef2ff;
+        }
+        .dropdown-option:not(:last-child) {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .hidden {
+            display: none !important;
         }
 
         /* Media Query for PC screens (larger columns and timer boxes) */
@@ -161,19 +195,19 @@
             .dropdown-container {
                 max-width: 300px; /* Wider dropdown */
             }
-            .dropdown-container label {
-                font-size: 1.25rem; /* Larger dropdown label */
-            }
-            .dropdown-container select {
-                padding: 1rem 1.25rem; /* Larger dropdown padding */
+            .dropdown-trigger {
                 font-size: 1.125rem; /* Larger dropdown font */
+                padding: 1rem 1.25rem; /* Larger dropdown padding */
+            }
+            .dropdown-option {
+                font-size: 1.125rem; /* Larger dropdown option font */
+                padding: 1rem 1.25rem; /* Larger dropdown option padding */
             }
         }
 
         /* Mobile (No sticky behavior for full height) */
         @media (max-width: 767px) { /* For screens smaller than md breakpoint */
             .timer-container {
-                /* Revert any sticky-specific styles and ensure full height */
                 border-radius: 1rem;
                 padding: 2.5rem;
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -188,13 +222,18 @@
     <div class="timer-container">
         <!-- Dropdown for School Level -->
         <div class="dropdown-container">
-            <label for="schoolLevelSelect" class="text-lg">Pilih Jenjang:</label>
-            <select id="schoolLevelSelect">
-                <option value="60">TK (60 menit)</option>
-                <option value="70">SD (70 menit)</option>
-                <option value="80">SMP (80 menit)</option>
-                <option value="90" selected>SMA (90 menit)</option>
-            </select>
+            <div id="selectedLevelDisplay" class="dropdown-trigger">
+                SMA (90 menit)
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-2">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div id="schoolLevelOptions" class="dropdown-options hidden">
+                <span class="dropdown-option" data-value="60">TK (60 menit)</span>
+                <span class="dropdown-option" data-value="70">SD (70 menit)</span>
+                <span class="dropdown-option" data-value="80">SMP (80 menit)</span>
+                <span class="dropdown-option" data-value="90">SMA (90 menit)</span>
+            </div>
         </div>
 
         <div class="main-timers-wrapper">
@@ -215,12 +254,22 @@
     </div>
 
     <script>
+        // Global variable for overtime interval and start time
+        let overtimeInterval;
+        let overtimeStartTime;
+
         // --- Countdown Timer Logic ---
         const countdownDisplay = document.getElementById('countdownDisplay');
         const startCountdownBtn = document.getElementById('startCountdown');
-        const schoolLevelSelect = document.getElementById('schoolLevelSelect');
+        
+        // Custom dropdown elements
+        const selectedLevelDisplay = document.getElementById('selectedLevelDisplay');
+        const schoolLevelOptions = document.getElementById('schoolLevelOptions');
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
         let countdownInterval;
-        let totalSeconds = parseInt(schoolLevelSelect.value) * 60; // Initialize from dropdown value
+        // Initialize totalSeconds based on the default selected value (SMA 90 minutes)
+        let totalSeconds = 90 * 60; 
 
         // Function to format seconds into MM:SS
         function formatTime(seconds) {
@@ -232,10 +281,10 @@
         // Function to start the countdown timer
         function startCountdown() {
             if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
-            // Use the current totalSeconds value, which is updated by the dropdown
+            
             countdownDisplay.textContent = formatTime(totalSeconds);
             startCountdownBtn.disabled = true; // Disable button while counting
-            schoolLevelSelect.disabled = true; // Disable dropdown during countdown
+            selectedLevelDisplay.style.pointerEvents = 'none'; // Disable dropdown interaction
 
             startStopwatch(); // Start the stopwatch when countdown begins
 
@@ -247,26 +296,61 @@
                     clearInterval(countdownInterval);
                     countdownDisplay.textContent = "00:00";
                     startCountdownBtn.disabled = false; // Re-enable button
-                    schoolLevelSelect.disabled = false; // Re-enable dropdown
-                    alertUser("Waktu hitung mundur telah habis!"); // Custom alert function
+                    selectedLevelDisplay.style.pointerEvents = 'auto'; // Re-enable dropdown interaction
+                    alertUser("Waktu hitung mundur telah habis!"); // Custom alert function with overtime
                 }
             }, 1000);
         }
 
         startCountdownBtn.addEventListener('click', startCountdown);
 
-        // Event listener for school level dropdown
-        schoolLevelSelect.addEventListener('change', function() {
-            // Update totalSeconds based on selected dropdown value
-            totalSeconds = parseInt(this.value) * 60;
-            countdownDisplay.textContent = formatTime(totalSeconds); // Update display immediately
-            // If countdown is active, stop it and let user restart with new time
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                startCountdownBtn.disabled = false;
-                alertUser("Durasi sisa waktu diubah. Silakan klik MULAI lagi.");
+        // Custom dropdown logic
+        selectedLevelDisplay.addEventListener('click', () => {
+            schoolLevelOptions.classList.toggle('hidden');
+        });
+
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const selectedValue = parseInt(this.dataset.value);
+                const selectedText = this.textContent;
+
+                selectedLevelDisplay.textContent = selectedText; // Update displayed text
+                selectedLevelDisplay.appendChild(createDropdownArrow()); // Add arrow back
+                schoolLevelOptions.classList.add('hidden'); // Hide options
+
+                // Update totalSeconds and reset countdown if running
+                if (totalSeconds !== selectedValue * 60) { // Only change if different
+                    totalSeconds = selectedValue * 60;
+                    countdownDisplay.textContent = formatTime(totalSeconds); // Update display immediately
+                    if (countdownInterval) {
+                        clearInterval(countdownInterval);
+                        startCountdownBtn.disabled = false;
+                        alertUser("Durasi sisa waktu diubah. Silakan klik MULAI lagi.");
+                    }
+                }
+            });
+        });
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown-container') && !schoolLevelOptions.classList.contains('hidden')) {
+                schoolLevelOptions.classList.add('hidden');
             }
         });
+
+        // Helper to create dropdown arrow SVG
+        function createDropdownArrow() {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 20 20");
+            svg.setAttribute("fill", "currentColor");
+            svg.classList.add("w-5", "h-5", "ml-2");
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("fill-rule", "evenodd");
+            path.setAttribute("d", "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z");
+            path.setAttribute("clip-rule", "evenodd");
+            svg.appendChild(path);
+            return svg;
+        }
 
 
         // --- Stopwatch Timer Logic ---
@@ -299,16 +383,24 @@
         function resetTimers() {
             // Clear countdown timer
             clearInterval(countdownInterval);
-            schoolLevelSelect.value = "90"; // Reset dropdown to SMA (90 minutes)
-            totalSeconds = parseInt(schoolLevelSelect.value) * 60; // Reset totalSeconds
+            
+            // Reset dropdown to SMA (90 minutes) and update totalSeconds
+            selectedLevelDisplay.textContent = "SMA (90 menit)";
+            selectedLevelDisplay.appendChild(createDropdownArrow()); // Add arrow back
+            totalSeconds = 90 * 60; 
             countdownDisplay.textContent = formatTime(totalSeconds);
             startCountdownBtn.disabled = false;
-            schoolLevelSelect.disabled = false; // Re-enable dropdown
+            selectedLevelDisplay.style.pointerEvents = 'auto'; // Re-enable dropdown interaction
 
             // Clear stopwatch timer
             clearInterval(stopwatchInterval);
             stopwatchStartTime = 0;
             stopwatchDisplay.textContent = "00:00";
+
+            // Clear overtime interval if it's running
+            if (overtimeInterval) {
+                clearInterval(overtimeInterval);
+            }
             
             alertUser("Semua timer telah direset!"); // Custom alert function
         }
@@ -325,13 +417,24 @@
             alertBox.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
             alertBox.innerHTML = `
                 <div class="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full text-center">
-                    <p class="text-xl font-semibold text-gray-800 mb-6">${message}</p>
+                    <p class="text-xl font-semibold text-gray-800 mb-4">${message}</p>
+                    <div id="overtimeDisplayInAlert" class="text-3xl font-bold text-red-600 mb-6"></div>
                     <button id="closeAlert" class="btn btn-primary w-full">Oke</button>
                 </div>
             `;
             document.body.appendChild(alertBox);
 
+            const overtimeDisplayInAlert = document.getElementById('overtimeDisplayInAlert');
+            overtimeStartTime = Date.now(); // Start counting from when the alert appears
+
+            // Start overtime timer
+            overtimeInterval = setInterval(() => {
+                const elapsedOvertime = Date.now() - overtimeStartTime;
+                overtimeDisplayInAlert.textContent = `Waktu Berlebih: ${formatStopwatchTime(elapsedOvertime)}`;
+            }, 1000); // Update every second
+
             document.getElementById('closeAlert').addEventListener('click', () => {
+                clearInterval(overtimeInterval); // Stop overtime timer when alert is closed
                 alertBox.remove();
             });
         }
