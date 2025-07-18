@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Pembelajaran - Desain 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .timer-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px; /* Wider layout */
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem; /* Add padding to the container itself */
+            align-items: center; /* Center content horizontally */
+        }
+        .main-timers-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 2.5rem; /* Gap between sections */
+        }
+        @media (min-width: 768px) {
+            .main-timers-wrapper {
+                flex-direction: row;
+            }
+        }
+        .timer-section {
+            flex: 1;
+            padding: 0 1rem; /* Adjust padding for internal sections */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* Consistent gap between elements in section */
+            position: relative;
+        }
+        /* Removed the vertical line CSS here */
+        .timer-display {
+            font-size: 4.5rem; /* Very large font */
+            font-weight: 700;
+            color: #2c5282; /* Dark blue text */
+            background-color: #e2e8f0;
+            padding: 1.5rem 2.5rem;
+            border-radius: 0.75rem;
+            min-width: 280px;
+            text-align: center;
+        }
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px; /* Adjusted max-width for buttons */
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue 500 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Blue 600 */
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background-color: #ef4444; /* Red 500 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* Red 600 */
+            transform: translateY(-2px);
+        }
+        h2 {
+            color: #2d3748;
+        }
+        .dropdown-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 250px; /* Keep max-width for dropdown */
+            margin-bottom: 2rem; /* More space below dropdown */
+        }
+        .dropdown-container label {
+            font-weight: 600;
+            color: #2c5282; /* Dark blue for label */
+        }
+        .dropdown-container select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #a5b4fc;
+            background-color: #eef2ff;
+            font-size: 1rem;
+            color: #2c5282;
+            appearance: none; /* Remove default arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%232c5282%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <!-- Dropdown for School Level -->
+        <div class="dropdown-container">
+            <label for="schoolLevelSelect" class="text-lg">Pilih Jenjang:</label>
+            <select id="schoolLevelSelect">
+                <option value="60">TK (60 menit)</option>
+                <option value="70">SD (70 menit)</option>
+                <option value="80">SMP (80 menit)</option>
+                <option value="90" selected>SMA (90 menit)</option>
+            </select>
+        </div>
+
+        <div class="main-timers-wrapper">
+            <!-- Countdown Timer Section -->
+            <div class="timer-section">
+                <h2 class="text-3xl font-bold mb-4">Sisa Waktu</h2>
+                <div id="countdownDisplay" class="timer-display">90:00</div>
+                <button id="startCountdown" class="btn btn-primary">MULAI</button>
+            </div>
+
+            <!-- Stopwatch Timer Section -->
+            <div class="timer-section">
+                <h2 class="text-3xl font-bold mb-4">Waktu Tempuh</h2>
+                <div id="stopwatchDisplay" class="timer-display">00:00</div>
+                <button id="resetTimers" class="btn btn-danger">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Countdown Timer Logic ---
+        const countdownDisplay = document.getElementById('countdownDisplay');
+        const startCountdownBtn = document.getElementById('startCountdown');
+        const schoolLevelSelect = document.getElementById('schoolLevelSelect');
+        let countdownInterval;
+        let totalSeconds = parseInt(schoolLevelSelect.value) * 60; // Initialize from dropdown value
+
+        // Function to format seconds into MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        // Function to start the countdown timer
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
+            // Use the current totalSeconds value, which is updated by the dropdown
+            countdownDisplay.textContent = formatTime(totalSeconds);
+            startCountdownBtn.disabled = true; // Disable button while counting
+            schoolLevelSelect.disabled = true; // Disable dropdown during countdown
+
+            startStopwatch(); // Start the stopwatch when countdown begins
+
+            countdownInterval = setInterval(() => {
+                totalSeconds--;
+                countdownDisplay.textContent = formatTime(totalSeconds);
+
+                if (totalSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownDisplay.textContent = "00:00";
+                    startCountdownBtn.disabled = false; // Re-enable button
+                    schoolLevelSelect.disabled = false; // Re-enable dropdown
+                    alertUser("Waktu hitung mundur telah habis!"); // Custom alert function
+                }
+            }, 1000);
+        }
+
+        startCountdownBtn.addEventListener('click', startCountdown);
+
+        // Event listener for school level dropdown
+        schoolLevelSelect.addEventListener('change', function() {
+            // Update totalSeconds based on selected dropdown value
+            totalSeconds = parseInt(this.value) * 60;
+            countdownDisplay.textContent = formatTime(totalSeconds); // Update display immediately
+            // If countdown is active, stop it and let user restart with new time
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                startCountdownBtn.disabled = false;
+                alertUser("Durasi sisa waktu diubah. Silakan klik MULAI lagi.");
+            }
+        });
+
+
+        // --- Stopwatch Timer Logic ---
+        const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+        const resetTimersBtn = document.getElementById('resetTimers');
+
+        let stopwatchInterval;
+        let stopwatchStartTime = 0;
+
+        // Function to format milliseconds into MM:SS
+        function formatStopwatchTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const remainingSeconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        // Function to start the stopwatch
+        function startStopwatch() {
+            stopwatchStartTime = Date.now();
+            if (stopwatchInterval) clearInterval(stopwatchInterval); // Clear any existing interval
+
+            stopwatchInterval = setInterval(() => {
+                const elapsedTime = Date.now() - stopwatchStartTime;
+                stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime);
+            }, 100); // Update every 100ms for smoother display
+        }
+
+        // --- Reset Function ---
+        function resetTimers() {
+            // Clear countdown timer
+            clearInterval(countdownInterval);
+            schoolLevelSelect.value = "90"; // Reset dropdown to SMA (90 minutes)
+            totalSeconds = parseInt(schoolLevelSelect.value) * 60; // Reset totalSeconds
+            countdownDisplay.textContent = formatTime(totalSeconds);
+            startCountdownBtn.disabled = false;
+            schoolLevelSelect.disabled = false; // Re-enable dropdown
+
+            // Clear stopwatch timer
+            clearInterval(stopwatchInterval);
+            stopwatchStartTime = 0;
+            stopwatchDisplay.textContent = "00:00";
+            
+            alertUser("Semua timer telah direset!"); // Custom alert function
+        }
+
+        resetTimersBtn.addEventListener('click', resetTimers);
+
+        // --- Custom Alert Function (instead of window.alert) ---
+        function alertUser(message) {
+            const existingAlert = document.getElementById('customAlert');
+            if (existingAlert) existingAlert.remove(); // Remove previous alert if exists
+
+            const alertBox = document.createElement('div');
+            alertBox.id = 'customAlert';
+            alertBox.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
+            alertBox.innerHTML = `
+                <div class="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full text-center">
+                    <p class="text-xl font-semibold text-gray-800 mb-6">${message}</p>
+                    <button id="closeAlert" class="btn btn-primary w-full">Oke</button>
+                </div>
+            `;
+            document.body.appendChild(alertBox);
+
+            document.getElementById('closeAlert').addEventListener('click', () => {
+                alertBox.remove();
+            });
+        }
+    </script>
+</body>
+</html>
