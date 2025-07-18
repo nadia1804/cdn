@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Timer V 0,4</title>
+    <title>Aplikasi Timer</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,10 +12,16 @@
             height: 100%; /* Pastikan html dan body mengambil tinggi penuh */
             margin: 0;
             padding: 0;
+            overflow-x: hidden; /* Mencegah penggeseran horizontal di seluruh halaman */
         }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8; /* Warna latar belakang lembut */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Memastikan body setidaknya setinggi viewport */
+            /* overflow-y: auto;  Tidak perlu di sini, karena scroll akan ditangani di div kontainer utama */
         }
         .timer-display {
             font-variant-numeric: tabular-nums; /* Memastikan angka sejajar */
@@ -66,8 +72,8 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
-    <!-- New main container: full height, no background color, centers its content -->
-    <div class="w-full h-full flex items-center justify-center p-4">
+    <!-- Kontainer utama: mengambil tinggi penuh, memusatkan konten, dan mengelola overflow vertikal -->
+    <div class="w-full max-h-screen flex items-center justify-center p-4 overflow-y-auto">
         <!-- Aplikasi timer berada di dalam kontainer ini dengan CSS aslinya -->
         <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
             <!-- Dropdown menu for selecting countdown time -->
