@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Timer</title>
+    <title>Aplikasi Timer V 0,4</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%; /* Pastikan html dan body mengambil tinggi penuh */
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8; /* Warna latar belakang lembut */
@@ -60,40 +65,44 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
-        <!-- Dropdown menu for selecting countdown time -->
-        <div class="mb-6">
-            <label for="timeSelect" class="block text-gray-700 text-lg font-medium mb-2">Pilih Durasi Timer:</label>
-            <select id="timeSelect" class="block w-full px-4 py-2 text-xl text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                <option value="60">Timer TK (60 Menit)</option>
-                <option value="70">Timer SD (70 Menit)</option>
-                <option value="80">Timer SMP (80 Menit)</option>
-                <option value="90" selected>Timer SMA (90 Menit)</option>
-            </select>
-        </div>
-
-        <div class="mb-8">
-            <div class="text-gray-600 text-lg mb-2">Hitung Mundur:</div>
-            <!-- Box design for Countdown Display -->
-            <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-4">
-                <div id="countdownDisplay" class="timer-display text-6xl font-extrabold text-blue-600">00:00</div>
+<body class="flex items-center justify-center min-h-screen">
+    <!-- New main container: full height, no background color, centers its content -->
+    <div class="w-full h-full flex items-center justify-center p-4">
+        <!-- Aplikasi timer berada di dalam kontainer ini dengan CSS aslinya -->
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
+            <!-- Dropdown menu for selecting countdown time -->
+            <div class="mb-6">
+                <label for="timeSelect" class="block text-gray-700 text-lg font-medium mb-2">Pilih Durasi Timer:</label>
+                <select id="timeSelect" class="block w-full px-4 py-2 text-xl text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                    <option value="60">Timer TK (60 Menit)</option>
+                    <option value="70">Timer SD (70 Menit)</option>
+                    <option value="80">Timer SMP (80 Menit)</option>
+                    <option value="90" selected>Timer SMA (90 Menit)</option>
+                </select>
             </div>
 
-            <div class="text-gray-600 text-lg mb-2">Waktu Berjalan:</div>
-            <!-- Box design for Elapsed Time Display -->
-            <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
-                <div id="elapsedDisplay" class="timer-display text-6xl font-extrabold text-green-600">00:00</div>
-            </div>
-        </div>
+            <div class="mb-8">
+                <div class="text-gray-600 text-lg mb-2">Hitung Mundur:</div>
+                <!-- Box design for Countdown Display -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-4">
+                    <div id="countdownDisplay" class="timer-display text-6xl font-extrabold text-blue-600">00:00</div>
+                </div>
 
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <button id="startButton" class="btn-primary bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
-                Mulai
-            </button>
-            <button id="resetButton" class="btn-secondary bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
-                Reset
-            </button>
+                <div class="text-gray-600 text-lg mb-2">Waktu Berjalan:</div>
+                <!-- Box design for Elapsed Time Display -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
+                    <div id="elapsedDisplay" class="timer-display text-6xl font-extrabold text-green-600">00:00</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="startButton" class="btn-primary bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Mulai
+                </button>
+                <button id="resetButton" class="btn-secondary bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Reset
+                </button>
+            </div>
         </div>
     </div>
 
