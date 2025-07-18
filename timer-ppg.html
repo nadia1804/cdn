@@ -25,7 +25,7 @@
             border-radius: 1rem;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 1000px; /* Wider layout */
+            max-width: 1000px; /* Default max-width */
             display: flex;
             flex-direction: column;
             padding: 2.5rem; /* Add padding to the container itself */
@@ -53,7 +53,7 @@
         }
         /* Removed the vertical line CSS here */
         .timer-display {
-            font-size: 4.5rem; /* Very large font */
+            font-size: 4.5rem; /* Default large font */
             font-weight: 700;
             color: #2c5282; /* Dark blue text */
             background-color: #e2e8f0;
@@ -119,6 +119,55 @@
             background-position: right 0.75rem center;
             background-size: 1.5em;
             cursor: pointer;
+        }
+
+        /* Media Query for PC screens (larger columns and timer boxes) */
+        @media (min-width: 1280px) { /* Corresponds to Tailwind's 2xl breakpoint */
+            .timer-container {
+                max-width: 1200px; /* Wider container for PC */
+                padding: 3.5rem; /* More padding */
+            }
+            .timer-section {
+                gap: 2rem; /* Increase gap */
+            }
+            .timer-display {
+                font-size: 5.5rem; /* Larger font for timers */
+                padding: 2rem 3rem; /* More padding */
+                min-width: 320px; /* Ensure larger display */
+            }
+            .btn {
+                padding: 1.2rem 2.4rem; /* Larger buttons */
+                max-width: 300px; /* Wider buttons */
+            }
+            h2 {
+                font-size: 2.5rem; /* Larger headings */
+            }
+            .dropdown-container {
+                max-width: 300px; /* Wider dropdown */
+            }
+            .dropdown-container label {
+                font-size: 1.25rem; /* Larger dropdown label */
+            }
+            .dropdown-container select {
+                padding: 1rem 1.25rem; /* Larger dropdown padding */
+                font-size: 1.125rem; /* Larger dropdown font */
+            }
+        }
+
+        /* Media Query for Mobile (sticky timer) */
+        @media (max-width: 767px) { /* For screens smaller than md breakpoint */
+            .timer-container {
+                position: sticky;
+                top: 0;
+                z-index: 100; /* Ensure it stays on top of other content if any */
+                border-radius: 0 0 1rem 1rem; /* Rounded bottom corners when sticky at top */
+                padding-top: 1.5rem; /* Slightly less padding on top */
+                padding-bottom: 1.5rem; /* Slightly less padding on bottom */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* More subtle shadow when sticky */
+            }
+            body {
+                align-items: flex-start; /* Align container to top for sticky effect */
+            }
         }
     </style>
 </head>
