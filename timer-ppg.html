@@ -3,566 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Timer Pembelajaran</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Popup.js library -->
-    <script src="https://popup.js.org/popup.js"></script>
+    <title>Aplikasi Timer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Global box-sizing for consistent layout */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh; /* Ensures body takes at least full viewport height */
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex;
-            justify-content: center;
-            align-items: center; /* Centers content vertically if it doesn't fill the screen */
-            padding: 15px; /* Padding around the main container */
+            background-color: #f0f4f8; /* Soft background color */
         }
-
-        .main-app-container {
-            background-color: #ffffff; /* White background */
-            border-radius: 15px; /* Slightly more rounded corners */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Softer shadow */
-            width: 100%;
-            max-width: 1100px; /* Increased max-width for larger screens */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px; /* Generous padding inside the container */
-            gap: 30px; /* Gap between dropdown container and timer cards wrapper */
+        .timer-display {
+            font-variant-numeric: tabular-nums; /* Ensures numbers align */
         }
-
-        /* Responsive adjustments for main container padding */
-        @media (min-width: 768px) { /* Medium devices */
-            .main-app-container {
-                padding: 40px;
-            }
-        }
-        @media (min-width: 992px) { /* Large devices */
-            .main-app-container {
-                padding: 50px;
-            }
-        }
-
-        /* Custom Dropdown Container */
-        .custom-dropdown-container {
-            display: flex;
-            justify-content: center; /* Center dropdown horizontally */
-            width: 100%; /* Full width within main-app-container */
-            max-width: 280px; /* Max width for dropdown */
-            position: relative; /* For dropdown options positioning */
-            z-index: 10; /* Ensure dropdown is above other elements */
-            text-align: center; /* Center the trigger text */
-        }
-        @media (min-width: 992px) {
-            .custom-dropdown-container {
-                max-width: 350px; /* Wider dropdown on larger screens */
-            }
-        }
-
-        .dropdown-trigger {
-            background-color: #eef2f7; /* Light gray background */
-            color: #2d3748; /* Dark gray, matching "Sisa Waktu" heading color */
-            padding: 12px 20px;
-            border: 2px solid #a5b4fc; /* Lighter indigo border */
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 100%; /* Make trigger take full width of its container */
-        }
-        .dropdown-trigger:hover {
-            background-color: #e2e8f0; /* Darker gray on hover */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        @media (min-width: 992px) {
-            .dropdown-trigger {
-                font-size: 1.25em;
-                padding: 15px 25px;
-            }
-        }
-
-        .dropdown-options {
-            position: absolute;
-            top: calc(100% + 8px); /* Position below the trigger with a small gap */
-            left: 0;
-            right: 0;
-            background-color: #ffffff;
-            border: 1px solid #d1d5db; /* Light gray border */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 1000;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .dropdown-option {
-            padding: 10px 15px;
-            cursor: pointer;
-            color: #374151; /* Dark gray text color */
-            font-size: 1em;
-            transition: background-color 0.1s ease-in-out;
-            display: block;
-            text-align: left;
-        }
-        .dropdown-option:hover {
-            background-color: #eef2f7; /* Light gray on hover */
-        }
-        .dropdown-option:not(:last-child) {
-            border-bottom: 1px solid #e5e7eb; /* Lighter gray border */
-        }
-        .hidden {
-            display: none !important;
-        }
-
-        /* Timer Cards Wrapper (holds both timer cards) */
-        .timers-section-wrapper {
-            flex-grow: 1; /* Allows the wrapper to take available vertical space */
-            display: flex;
-            flex-direction: column; /* Default to column on mobile */
-            justify-content: center; /* Vertically center cards within this wrapper */
-            align-items: center; /* Horizontally center cards within this wrapper */
-            width: 100%;
-            gap: 30px; /* Gap between timer cards on mobile */
-        }
-        @media (min-width: 768px) { /* Medium devices */
-            .timers-section-wrapper {
-                flex-direction: row; /* Side-by-side on larger screens */
-                justify-content: space-around; /* Distribute horizontally */
-                gap: 40px; /* Larger gap between cards on desktop */
-            }
-        }
-
-        /* Individual Timer Card */
-        .timer-card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Lighter shadow */
-            padding: 25px;
-            border: 1px solid #d1d5db; /* Light gray border */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center; /* Center content vertically */
-            text-align: center;
-            width: 100%; /* Full width on mobile */
-            max-width: 450px; /* Max width for individual cards */
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Animation for card */
-        }
-        .timer-card:hover {
-            transform: translateY(-5px); /* Lift effect on hover */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
-        }
-        @media (max-width: 767px) { /* Only apply margin-bottom on mobile */
-            .timer-card:not(:last-child) {
-                margin-bottom: 20px; /* Space between cards on mobile */
-            }
-        }
-        @media (min-width: 992px) {
-            .timer-card {
-                padding: 35px;
-            }
-        }
-
-        .timer-heading {
-            color: #2d3748; /* Dark gray heading color */
-            font-size: 1.75em; /* Default heading size for mobile */
-            margin-bottom: 20px;
-        }
-        @media (min-width: 768px) {
-            .timer-heading {
-                font-size: 2.25em;
-            }
-        }
-        @media (min-width: 992px) {
-            .timer-heading {
-                font-size: 2.5em;
-            }
-        }
-
-        .timer-display-box {
-            font-size: 3.5em; /* Larger default font for timer numbers */
-            font-weight: 800; /* Extra bold */
-            color: #0d6efd; /* Primary blue color for timer text */
-            background-color: #eef2f7; /* Light gray background */
-            padding: 20px 30px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 280px; /* Consistent max-width */
-            margin-bottom: 25px;
-            border: 1px solid #d1d5db; /* Light gray border */
-            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Animation for timer display */
-        }
-        @media (min-width: 768px) {
-            .timer-display-box {
-                font-size: 4.5em;
-                padding: 25px 40px;
-            }
-        }
-        @media (min-width: 992px) {
-            .timer-display-box {
-                font-size: 5.5em;
-                padding: 30px 50px;
-                max-width: 350px;
-            }
-        }
-
-        .btn-timer-action {
-            font-weight: 700;
-            border-radius: 8px;
-            padding: 12px 24px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: all 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            width: 100%;
-            max-width: 250px;
-            border: 1px solid transparent; /* Default transparent border */
-        }
-        .btn-timer-action.btn-primary-custom {
-            background-color: #0d6efd; /* Primary blue */
-            color: #ffffff;
-            border-color: #0d6efd;
-        }
-        .btn-timer-action.btn-primary-custom:hover {
-            background-color: #0a58ca; /* Darker blue on hover */
-            border-color: #0a53be;
+        /* Custom styles for button hover effects */
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .btn-timer-action.btn-danger-custom {
-            background-color: #dc3545; /* Danger red */
-            color: #ffffff;
-            border-color: #dc3545;
-        }
-        .btn-timer-action.btn-danger-custom:hover {
-            background-color: #bb2d3b; /* Darker red on hover */
-            border-color: #b02a37;
+        .btn-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-        }
-
-        @media (min-width: 992px) {
-            .btn-timer-action {
-                padding: 15px 30px;
-                max-width: 300px;
-            }
-        }
-
-        /* Custom Alert Modal (using popup.js for functionality) */
-        /* Basic styling for popup.js default modal, can be overridden by popup.js internal styles */
-        .popup-modal {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            max-width: 380px;
-            width: 90%;
-            text-align: center;
-        }
-        .popup-modal .popup-title {
-            color: #2d3748;
-            font-size: 1.75em;
-            margin-bottom: 15px;
-        }
-        .popup-modal .popup-content {
-            font-size: 1.1em;
-            color: #374151;
-            margin-bottom: 20px;
-        }
-        .popup-modal .popup-buttons button {
-            font-weight: 700;
-            border-radius: 8px;
-            padding: 10px 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: all 0.2s ease-in-out;
-            border: 1px solid transparent;
-            background-color: #0d6efd;
-            color: #ffffff;
-        }
-        .popup-modal .popup-buttons button:hover {
-            background-color: #0a58ca;
-            border-color: #0a53be;
-        }
-        /* Style for overtime display within popup */
-        #overtimeDisplayInAlert {
-            color: #dc3545; /* Danger red */
-            font-size: 2.25em;
-            font-weight: 700;
-            margin-top: 15px; /* Space above overtime text */
-            margin-bottom: 0; /* No bottom margin, button comes next */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
-<body>
-    <div class="main-app-container">
-        <!-- Dropdown for School Level -->
-        <div class="custom-dropdown-container">
-            <div id="selectedLevelDisplay" class="dropdown-trigger">
-                SMA (90 menit)
-                <!-- SVG for dropdown arrow -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="ms-2" style="width: 20px; height: 20px;">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
+        <!-- Removed H1 title "Timer Saya" -->
+
+        <!-- Dropdown menu for selecting countdown time -->
+        <div class="mb-6">
+            <label for="timeSelect" class="block text-gray-700 text-lg font-medium mb-2">Pilih Durasi Timer:</label>
+            <select id="timeSelect" class="block w-full px-4 py-2 text-xl text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                <option value="60">Timer TK (60 Menit)</option>
+                <option value="70">Timer SD (70 Menit)</option>
+                <option value="80">Timer SMP (80 Menit)</option>
+                <option value="90" selected>Timer SMA (90 Menit)</option>
+            </select>
+        </div>
+
+        <div class="mb-8">
+            <div class="text-gray-600 text-lg mb-2">Hitung Mundur:</div>
+            <!-- Box design for Countdown Display -->
+            <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-4">
+                <div id="countdownDisplay" class="timer-display text-6xl font-extrabold text-blue-600">00:00</div>
             </div>
-            <div id="schoolLevelOptions" class="dropdown-options hidden">
-                <span class="dropdown-option" data-value="60">TK (60 menit)</span>
-                <span class="dropdown-option" data-value="70">SD (70 menit)</span>
-                <span class="dropdown-option" data-value="80">SMP (80 menit)</span>
-                <span class="dropdown-option" data-value="90">SMA (90 menit)</span>
+
+            <div class="text-gray-600 text-lg mb-2">Waktu Berjalan:</div>
+            <!-- Box design for Elapsed Time Display -->
+            <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
+                <div id="elapsedDisplay" class="timer-display text-6xl font-extrabold text-green-600">00:00</div>
             </div>
         </div>
 
-        <div class="timers-section-wrapper">
-            <!-- Countdown Timer Section -->
-            <div class="timer-card">
-                <h2 class="timer-heading">Sisa Waktu</h2>
-                <div id="countdownDisplay" class="timer-display-box">90:00</div>
-                <button id="startCountdown" class="btn-timer-action btn-primary-custom">MULAI</button>
-            </div>
-
-            <!-- Stopwatch Timer Section -->
-            <div class="timer-card">
-                <h2 class="timer-heading">Waktu Tempuh</h2>
-                <div id="stopwatchDisplay" class="timer-display-box">00:00</div>
-                <button id="resetTimers" class="btn-timer-action btn-danger-custom">RESET</button>
-            </div>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button id="startButton" class="btn-primary bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                Mulai
+            </button>
+            <button id="resetButton" class="btn-secondary bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                Reset
+            </button>
         </div>
     </div>
 
     <script>
-        // Global variable for overtime interval and start time
-        let overtimeInterval;
-        let overtimeStartTime;
-
-        // --- Countdown Timer Logic ---
+        // Get DOM elements
         const countdownDisplay = document.getElementById('countdownDisplay');
-        const startCountdownBtn = document.getElementById('startCountdown');
-        
-        // Custom dropdown elements
-        const selectedLevelDisplay = document.getElementById('selectedLevelDisplay');
-        const schoolLevelOptions = document.getElementById('schoolLevelOptions');
-        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+        const elapsedDisplay = document.getElementById('elapsedDisplay');
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const timeSelect = document.getElementById('timeSelect');
 
-        let countdownInterval;
-        // Initialize totalSeconds based on the default selected value (SMA 90 minutes)
-        let totalSeconds = 90 * 60; 
+        // Variables to store timer status
+        let countdownTime; // Initial countdown time in seconds
+        let elapsedTime = 0;    // Elapsed time in seconds
+        let intervalId = null;  // Interval ID to stop the timer
+        let isRunning = false;  // Status if timer is running
 
-        // Function to format seconds into MM:SS
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        }
-
-        // Function to start the countdown timer
-        function startCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
-            
-            countdownDisplay.textContent = formatTime(totalSeconds);
-            startCountdownBtn.disabled = true; // Disable button while counting
-            selectedLevelDisplay.style.pointerEvents = 'none'; // Disable dropdown interaction
-
-            startStopwatch(); // Start the stopwatch when countdown begins
-
-            countdownInterval = setInterval(() => {
-                totalSeconds--;
-                countdownDisplay.textContent = formatTime(totalSeconds);
-
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    countdownDisplay.textContent = "00:00";
-                    startCountdownBtn.disabled = false; // Re-enable button
-                    selectedLevelDisplay.style.pointerEvents = 'auto'; // Re-enable dropdown interaction
-                    alertUserWithOvertime("Waktu hitung mundur telah habis!"); // Custom alert function with overtime
-                }
-            }, 1000);
-        }
-
-        startCountdownBtn.addEventListener('click', startCountdown);
-
-        // Custom dropdown logic
-        selectedLevelDisplay.addEventListener('click', () => {
-            schoolLevelOptions.classList.toggle('hidden');
-        });
-
-        dropdownOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const selectedValue = parseInt(this.dataset.value);
-                const selectedText = this.textContent;
-
-                selectedLevelDisplay.textContent = selectedText; // Update displayed text
-                selectedLevelDisplay.appendChild(createDropdownArrow()); // Add arrow back
-                schoolLevelOptions.classList.add('hidden'); // Hide options
-
-                // Update totalSeconds and reset countdown if running
-                if (totalSeconds !== selectedValue * 60) { // Only change if different
-                    totalSeconds = selectedValue * 60;
-                    countdownDisplay.textContent = formatTime(totalSeconds); // Update display immediately
-                    if (countdownInterval) {
-                        clearInterval(countdownInterval);
-                        startCountdownBtn.disabled = false;
-                        // Use popup.js for notification when duration is changed during countdown
-                        popup.alert({
-                            title: 'Durasi Diubah',
-                            content: 'Durasi sisa waktu diubah. Silakan klik MULAI lagi.',
-                            buttons: {
-                                ok: {
-                                    text: 'Oke',
-                                    className: 'btn-timer-action btn-primary-custom'
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        });
-
-        // Close dropdown if clicked outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.custom-dropdown-container') && !schoolLevelOptions.classList.contains('hidden')) {
-                schoolLevelOptions.classList.add('hidden');
-            }
-        });
-
-        // Helper to create dropdown arrow SVG
-        function createDropdownArrow() {
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("viewBox", "0 0 20 20");
-            svg.setAttribute("fill", "currentColor");
-            svg.classList.add("ms-2"); /* Bootstrap 5 margin-start */
-            svg.style.width = '20px'; /* Ensure explicit size for SVG */
-            svg.style.height = '20px';
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("fill-rule", "evenodd");
-            path.setAttribute("d", "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z");
-            path.setAttribute("clip-rule", "evenodd");
-            svg.appendChild(path);
-            return svg;
-        }
-
-
-        // --- Stopwatch Timer Logic ---
-        const stopwatchDisplay = document.getElementById('stopwatchDisplay');
-        const resetTimersBtn = document.getElementById('resetTimers');
-
-        let stopwatchInterval;
-        let stopwatchStartTime = 0;
-
-        // Function to format milliseconds into MM:SS
-        function formatStopwatchTime(milliseconds) {
-            const totalSeconds = Math.floor(milliseconds / 1000);
+        /**
+         * Converts time from seconds to MM:SS format
+         * @param {number} totalSeconds - Total time in seconds
+         * @returns {string} Time in MM:SS format
+         */
+        function formatTime(totalSeconds) {
             const minutes = Math.floor(totalSeconds / 60);
-            const remainingSeconds = totalSeconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        // Function to start the stopwatch
-        function startStopwatch() {
-            stopwatchStartTime = Date.now();
-            if (stopwatchInterval) clearInterval(stopwatchInterval); // Clear any existing interval
+        /**
+         * Updates the countdown and elapsed time display
+         */
+        function updateDisplay() {
+            countdownDisplay.textContent = formatTime(countdownTime);
+            elapsedDisplay.textContent = formatTime(elapsedTime);
 
-            stopwatchInterval = setInterval(() => {
-                const elapsedTime = Date.now() - stopwatchStartTime;
-                stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime);
-            }, 100); // Update every 100ms for smoother display
-        }
-
-        // --- Reset Function ---
-        function resetTimers() {
-            // Clear countdown timer
-            clearInterval(countdownInterval);
-            
-            // Reset dropdown to SMA (90 minutes) and update totalSeconds
-            selectedLevelDisplay.textContent = "SMA (90 menit)";
-            selectedLevelDisplay.appendChild(createDropdownArrow()); // Add arrow back
-            totalSeconds = 90 * 60; 
-            countdownDisplay.textContent = formatTime(totalSeconds);
-            startCountdownBtn.disabled = false;
-            selectedLevelDisplay.style.pointerEvents = 'auto'; // Re-enable dropdown interaction
-
-            // Clear stopwatch timer
-            clearInterval(stopwatchInterval);
-            stopwatchStartTime = 0;
-            stopwatchDisplay.textContent = "00:00";
-
-            // Clear overtime interval if it's running
-            if (overtimeInterval) {
-                clearInterval(overtimeInterval);
+            // If countdown reaches 0, stop the timer
+            if (countdownTime <= 0 && isRunning) {
+                stopTimer();
+                countdownDisplay.textContent = "00:00"; // Ensure it stays 00:00
+                console.log("Time's up!");
             }
-            
-            // Use popup.js for reset confirmation
-            popup.alert({
-                title: 'Timer Direset',
-                content: 'Semua timer telah direset!',
-                buttons: {
-                    ok: {
-                        text: 'Oke',
-                        className: 'btn-timer-action btn-primary-custom'
-                    }
-                }
-            });
         }
 
-        resetTimersBtn.addEventListener('click', resetTimers);
+        /**
+         * Starts the timer
+         */
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startButton.textContent = 'Jeda'; // Change button text to Pause
+                startButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                startButton.classList.add('bg-orange-500', 'hover:bg-orange-600');
+                timeSelect.disabled = true; // Disable dropdown while timer is running
 
-        // --- Custom Alert Function with Overtime (using popup.js) ---
-        function alertUserWithOvertime(message) {
-            let popupInstance;
-            let overtimeContentId = 'overtimeDisplayInPopup';
-
-            overtimeStartTime = Date.now(); // Start counting from when the alert appears
-
-            // Clear any existing overtime interval before starting a new one
-            if (overtimeInterval) {
-                clearInterval(overtimeInterval);
+                intervalId = setInterval(() => {
+                    if (countdownTime > 0) {
+                        countdownTime--;
+                    }
+                    elapsedTime++;
+                    updateDisplay();
+                }, 1000); // Every 1 second
+            } else {
+                stopTimer();
             }
-
-            const initialContent = `<p class="lead text-body-secondary">${message}</p><div id="${overtimeContentId}" class="mt-3"></div>`;
-
-            popupInstance = popup.alert({
-                title: 'Waktu Habis!',
-                content: initialContent,
-                buttons: {
-                    ok: {
-                        text: 'Oke',
-                        className: 'btn-timer-action btn-primary-custom',
-                        action: function() {
-                            clearInterval(overtimeInterval); // Stop overtime timer when popup is closed
-                            popupInstance.close();
-                        }
-                    }
-                },
-                onOpen: function() {
-                    const overtimeDisplayElement = document.getElementById(overtimeContentId);
-                    if (overtimeDisplayElement) {
-                        // Start overtime timer and update content
-                        overtimeInterval = setInterval(() => {
-                            const elapsedOvertime = Date.now() - overtimeStartTime;
-                            overtimeDisplayElement.innerHTML = `<span id="overtimeDisplayInAlert">Waktu Berlebih: ${formatStopwatchTime(elapsedOvertime)}</span>`;
-                        }, 1000);
-                    }
-                },
-                onClose: function() {
-                    clearInterval(overtimeInterval); // Ensure interval is cleared if closed by other means
-                }
-            });
         }
+
+        /**
+         * Stops the timer
+         */
+        function stopTimer() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            isRunning = false;
+            startButton.textContent = 'Lanjutkan'; // Change button text to Resume
+            startButton.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+            startButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            timeSelect.disabled = false; // Enable dropdown when timer is stopped
+        }
+
+        /**
+         * Resets the timer to initial state based on selected dropdown value
+         */
+        function resetTimer() {
+            stopTimer(); // Stop if running
+            const selectedMinutes = parseInt(timeSelect.value);
+            countdownTime = selectedMinutes * 60; // Reset countdown based on selection
+            elapsedTime = 0;    // Reset elapsed time
+            startButton.textContent = 'Mulai'; // Reset button text
+            startButton.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+            startButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            timeSelect.disabled = false; // Ensure dropdown is enabled
+            updateDisplay();    // Update display
+        }
+
+        // Event listener for start button
+        startButton.addEventListener('click', startTimer);
+        // Event listener for reset button
+        resetButton.addEventListener('click', resetTimer);
+        // Event listener for dropdown change
+        timeSelect.addEventListener('change', resetTimer); // Reset timer when new option is selected
+
+        // Initialize display on page load
+        // Set initial countdown time based on default dropdown value (90 minutes)
+        countdownTime = parseInt(timeSelect.value) * 60;
+        updateDisplay();
     </script>
 </body>
 </html>
