@@ -3,22 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer Pembelajaran - Desain 4</title>
+    <title>Timer PPG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- PWA: Link to manifest.json -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff"/>
     <style>
+        /* Global box-sizing for consistent layout */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%; /* Make html and body take full viewport height */
+            margin: 0;
+            padding: 0; /* Remove default padding */
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            display: flex; /* Use flexbox for centering */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            padding: 20px; /* Keep padding around the container */
+            box-sizing: border-box; /* Include padding in height calculation */
         }
         .timer-container {
             background-color: #ffffff;
@@ -26,20 +36,27 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 1000px; /* Default max-width */
+            height: 100%; /* Make container take full available height */
             display: flex;
             flex-direction: column;
             padding: 2.5rem; /* Add padding to the container itself */
             align-items: center; /* Center content horizontally */
+            justify-content: space-evenly; /* Distribute content vertically */
         }
         .main-timers-wrapper {
             display: flex;
             flex-direction: column;
             width: 100%;
             gap: 2.5rem; /* Gap between sections */
+            flex-grow: 1; /* Allow this wrapper to grow and take available space */
+            justify-content: center; /* Center timers vertically within the wrapper */
+            align-items: center; /* Center timers horizontally within the wrapper */
         }
         @media (min-width: 768px) {
             .main-timers-wrapper {
                 flex-direction: row;
+                justify-content: space-around; /* Distribute horizontally on desktop */
+                align-items: center; /* Align timers in the middle vertically within wrapper on desktop */
             }
         }
         .timer-section {
@@ -51,7 +68,6 @@
             gap: 1.5rem; /* Consistent gap between elements in section */
             position: relative;
         }
-        /* Removed the vertical line CSS here */
         .timer-display {
             font-size: 4.5rem; /* Default large font */
             font-weight: 700;
@@ -99,7 +115,7 @@
             gap: 0.5rem;
             width: 100%;
             max-width: 250px; /* Keep max-width for dropdown */
-            margin-bottom: 2rem; /* More space below dropdown */
+            /* margin-bottom: 2rem; - Removed as space-evenly handles vertical distribution */
         }
         .dropdown-container label {
             font-weight: 600;
@@ -154,19 +170,16 @@
             }
         }
 
-        /* Media Query for Mobile (sticky timer) */
+        /* Mobile (No sticky behavior for full height) */
         @media (max-width: 767px) { /* For screens smaller than md breakpoint */
             .timer-container {
-                position: sticky;
-                top: 0;
-                z-index: 100; /* Ensure it stays on top of other content if any */
-                border-radius: 0 0 1rem 1rem; /* Rounded bottom corners when sticky at top */
-                padding-top: 1.5rem; /* Slightly less padding on top */
-                padding-bottom: 1.5rem; /* Slightly less padding on bottom */
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* More subtle shadow when sticky */
+                /* Revert any sticky-specific styles and ensure full height */
+                border-radius: 1rem;
+                padding: 2.5rem;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             }
             body {
-                align-items: flex-start; /* Align container to top for sticky effect */
+                align-items: center; /* Ensure vertical centering */
             }
         }
     </style>
