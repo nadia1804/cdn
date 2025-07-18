@@ -22,7 +22,16 @@
             align-items: center;
             min-height: 100vh; /* Memastikan body setidaknya setinggi viewport */
             padding: 1rem; /* Padding agar aplikasi tidak menempel tepi layar */
-            overflow-y: auto; /* Memungkinkan penggeseran vertikal jika konten melebihi tinggi viewport */
+            /* overflow-y: auto;  Overflow Y akan ditangani oleh kontainer .full-height */
+        }
+        .full-height {
+            width: 100%;
+            height: 100%; /* Mengambil tinggi penuh dari parent (body) */
+            display: flex;
+            flex-direction: column; /* Mengatur konten secara vertikal */
+            justify-content: center; /* Memusatkan konten secara vertikal */
+            align-items: center; /* Memusatkan konten secara horizontal */
+            overflow-y: auto; /* Memungkinkan penggeseran vertikal di dalam kontainer ini jika konten melebihi tingginya */
         }
         .timer-display {
             font-variant-numeric: tabular-nums; /* Memastikan angka sejajar */
@@ -73,42 +82,45 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
-    <!-- Aplikasi timer utama -->
-    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
+    <!-- Kontainer utama baru: full height, tanpa warna, mengelola overflow vertikal -->
+    <div class="full-height">
+        <!-- Aplikasi timer utama berada di dalam kontainer ini -->
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
 
-        <!-- Bagian Tampilan Hitung Mundur dan Waktu Berjalan (dipindahkan ke atas) -->
-        <div class="mb-8">
-            <div class="text-gray-600 text-lg mb-2">Hitung Mundur:</div>
-            <!-- Box design for Countdown Display -->
-            <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-4">
-                <div id="countdownDisplay" class="timer-display text-6xl font-extrabold text-blue-600">00:00</div>
+            <!-- Bagian Tampilan Hitung Mundur dan Waktu Berjalan (dipindahkan ke atas) -->
+            <div class="mb-8">
+                <div class="text-gray-600 text-lg mb-2">Hitung Mundur:</div>
+                <!-- Box design for Countdown Display -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-4">
+                    <div id="countdownDisplay" class="timer-display text-6xl font-extrabold text-blue-600">00:00</div>
+                </div>
+
+                <div class="text-gray-600 text-lg mb-2">Waktu Berjalan:</div>
+                <!-- Box design for Elapsed Time Display -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
+                    <div id="elapsedDisplay" class="timer-display text-6xl font-extrabold text-green-600">00:00</div>
+                </div>
             </div>
 
-            <div class="text-gray-600 text-lg mb-2">Waktu Berjalan:</div>
-            <!-- Box design for Elapsed Time Display -->
-            <div class="bg-gray-100 p-4 rounded-lg shadow-inner">
-                <div id="elapsedDisplay" class="timer-display text-6xl font-extrabold text-green-600">00:00</div>
+            <!-- Dropdown menu for selecting countdown time (dipindahkan ke bawah tampilan timer) -->
+            <div class="mb-6">
+                <label for="timeSelect" class="block text-gray-700 text-lg font-medium mb-2">Pilih Durasi Timer:</label>
+                <select id="timeSelect" class="block w-full px-4 py-2 text-xl text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                    <option value="60">Timer TK (60 Menit)</option>
+                    <option value="70">Timer SD (70 Menit)</option>
+                    <option value="80">Timer SMP (80 Menit)</option>
+                    <option value="90" selected>Timer SMA (90 Menit)</option>
+                </select>
             </div>
-        </div>
 
-        <!-- Dropdown menu for selecting countdown time (dipindahkan ke bawah tampilan timer) -->
-        <div class="mb-6">
-            <label for="timeSelect" class="block text-gray-700 text-lg font-medium mb-2">Pilih Durasi Timer:</label>
-            <select id="timeSelect" class="block w-full px-4 py-2 text-xl text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                <option value="60">Timer TK (60 Menit)</option>
-                <option value="70">Timer SD (70 Menit)</option>
-                <option value="80">Timer SMP (80 Menit)</option>
-                <option value="90" selected>Timer SMA (90 Menit)</option>
-            </select>
-        </div>
-
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <button id="startButton" class="btn-primary bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
-                Mulai
-            </button>
-            <button id="resetButton" class="btn-secondary bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
-                Reset
-            </button>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="startButton" class="btn-primary bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Mulai
+                </button>
+                <button id="resetButton" class="btn-secondary bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Reset
+                </button>
+            </div>
         </div>
     </div>
 
