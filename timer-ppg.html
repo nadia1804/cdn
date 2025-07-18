@@ -6,6 +6,9 @@
     <title>Timer Pembelajaran - Desain 4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: Link to manifest.json -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff"/>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -268,6 +271,19 @@
 
             document.getElementById('closeAlert').addEventListener('click', () => {
                 alertBox.remove();
+            });
+        }
+
+        // PWA: Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
             });
         }
     </script>
