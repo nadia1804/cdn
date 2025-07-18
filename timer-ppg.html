@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer Pembelajaran - Desain 4</title>
+    <title>Timer Pembelajaran PPG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- PWA: Link to manifest.json -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff"/>
+    <!-- Meta Cache: Cache for 1 year -->
+    <meta http-equiv="Cache-control" content="public, max-age=31536000">
     <style>
         /* Global box-sizing for consistent layout */
         *, *::before, *::after {
@@ -27,101 +26,164 @@
             display: flex; /* Use flexbox for centering */
             justify-content: center; /* Center horizontally */
             align-items: center; /* Center vertically */
-            padding: 20px; /* Keep padding around the container */
-            box-sizing: border-box; /* Include padding in height calculation */
+            padding: 1rem; /* Padding around the main container, responsive */
+            min-height: 100vh; /* Ensure full viewport height */
         }
         .timer-container {
             background-color: #ffffff;
             border-radius: 1rem;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 1000px; /* Default max-width */
-            height: 100%; /* Make container take full available height */
+            max-width: 1000px; /* Max width for larger screens */
+            height: 100%; /* Take full available height within padding */
             display: flex;
-            flex-direction: column;
-            padding: 2.5rem; /* Add padding to the container itself */
+            flex-direction: column; /* Main container is a column */
+            padding: 1.5rem; /* Default padding inside container */
             align-items: center; /* Center content horizontally */
-            justify-content: space-evenly; /* Distribute content vertically */
-            position: relative; /* For dropdown absolute positioning */
+            justify-content: flex-start; /* Align content to the top, space handled by gaps */
+            gap: 2rem; /* Gap between dropdown and main timers wrapper */
         }
+        @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
+            .timer-container {
+                padding: 2.5rem; /* More padding on larger screens */
+                gap: 3rem; /* Larger gap on larger screens */
+            }
+        }
+        @media (min-width: 1024px) { /* Large screens (desktop) */
+            .timer-container {
+                max-width: 1200px; /* Even wider for large desktops */
+                padding: 3.5rem;
+            }
+        }
+
         .main-timers-wrapper {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Default to column for mobile */
             width: 100%;
-            gap: 2.5rem; /* Gap between sections */
+            gap: 2rem; /* Gap between timer sections */
             flex-grow: 1; /* Allow this wrapper to grow and take available space */
             justify-content: center; /* Center timers vertically within the wrapper */
             align-items: center; /* Center timers horizontally within the wrapper */
         }
-        @media (min-width: 768px) {
+        @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
             .main-timers-wrapper {
-                flex-direction: row;
-                justify-content: space-around; /* Distribute horizontally on desktop */
-                align-items: center; /* Align timers in the middle vertically within wrapper on desktop */
+                flex-direction: row; /* Row for larger screens */
+                justify-content: space-around; /* Distribute horizontally */
+                gap: 3rem; /* Larger gap */
             }
         }
+
         .timer-section {
-            flex: 1;
-            padding: 0 1rem; /* Adjust padding for internal sections */
+            flex: 1; /* Each section takes equal space */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem; /* Consistent gap between elements in section */
-            position: relative;
+            gap: 1rem; /* Consistent gap within section */
+            width: 100%; /* Ensure sections take full width on mobile */
         }
+        @media (min-width: 768px) {
+            .timer-section {
+                gap: 1.5rem; /* Larger gap within section on larger screens */
+            }
+        }
+
         .timer-display {
-            font-size: 4.5rem; /* Default large font */
+            font-size: 3rem; /* Default font size for mobile */
             font-weight: 700;
-            color: #2c5282; /* Dark blue text */
+            color: #2c5282;
             background-color: #e2e8f0;
-            padding: 1.5rem 2.5rem;
+            padding: 1rem 1.5rem; /* Default padding */
             border-radius: 0.75rem;
-            min-width: 280px;
+            width: 100%; /* Take full width of its parent */
+            max-width: 280px; /* Max width for the display box */
             text-align: center;
         }
+        @media (min-width: 768px) {
+            .timer-display {
+                font-size: 4.5rem; /* Larger on tablet/desktop */
+                padding: 1.5rem 2.5rem;
+                min-width: 280px; /* Ensure minimum width */
+            }
+        }
+        @media (min-width: 1280px) {
+            .timer-display {
+                font-size: 5.5rem; /* Even larger on big PC screens */
+                padding: 2rem 3rem;
+                min-width: 320px;
+            }
+        }
+
         .btn {
-            padding: 0.9rem 1.8rem;
+            padding: 0.8rem 1.6rem; /* Default button padding */
             border-radius: 0.75rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
-            width: 100%;
-            max-width: 250px; /* Adjusted max-width for buttons */
+            width: 100%; /* Buttons take full width of their parent */
+            max-width: 250px; /* Max width for buttons */
         }
+        @media (min-width: 768px) {
+            .btn {
+                padding: 0.9rem 1.8rem; /* Slightly larger on tablet/desktop */
+            }
+        }
+        @media (min-width: 1280px) {
+            .btn {
+                padding: 1.2rem 2.4rem; /* Even larger on big PC screens */
+                max-width: 300px;
+            }
+        }
+
         .btn-primary {
-            background-color: #3b82f6; /* Blue 500 */
+            background-color: #3b82f6;
             color: #ffffff;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
         .btn-primary:hover {
-            background-color: #2563eb; /* Blue 600 */
+            background-color: #2563eb;
             transform: translateY(-2px);
         }
         .btn-danger {
-            background-color: #ef4444; /* Red 500 */
+            background-color: #ef4444;
             color: #ffffff;
             box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
         }
         .btn-danger:hover {
-            background-color: #dc2626; /* Red 600 */
+            background-color: #dc2626;
             transform: translateY(-2px);
         }
         h2 {
             color: #2d3748;
+            font-size: 1.75rem; /* Default heading size for mobile */
         }
+        @media (min-width: 768px) {
+            h2 {
+                font-size: 2.25rem; /* Larger on tablet/desktop */
+            }
+        }
+        @media (min-width: 1280px) {
+            h2 {
+                font-size: 2.5rem; /* Even larger on big PC screens */
+            }
+        }
+
+        /* Dropdown specific styles */
         .dropdown-container {
-            position: absolute; /* Position dropdown absolutely within timer-container */
-            top: 20px; /* Adjust top positioning as needed */
-            left: 50%;
-            transform: translateX(-50%);
+            /* No absolute positioning anymore, let flexbox handle it */
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
             width: 100%;
-            max-width: 250px; /* Keep max-width for dropdown */
-            z-index: 20; /* Ensure it's above other content */
+            max-width: 250px; /* Max width for dropdown */
+            /* Removed margin-bottom as gap on timer-container handles spacing */
         }
+        @media (min-width: 1280px) {
+            .dropdown-container {
+                max-width: 300px; /* Wider dropdown on big PC screens */
+            }
+        }
+
         .dropdown-trigger {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -142,8 +204,15 @@
             background-color: #e2e8f0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
+        @media (min-width: 1280px) {
+            .dropdown-trigger {
+                font-size: 1.125rem; /* Larger dropdown font */
+                padding: 1rem 1.25rem; /* Larger dropdown padding */
+            }
+        }
+
         .dropdown-options {
-            position: absolute;
+            position: absolute; /* Keep options absolute relative to trigger */
             top: calc(100% + 10px); /* Position below the trigger with some gap */
             background-color: #ffffff;
             border-radius: 0.75rem;
@@ -169,52 +238,6 @@
         }
         .hidden {
             display: none !important;
-        }
-
-        /* Media Query for PC screens (larger columns and timer boxes) */
-        @media (min-width: 1280px) { /* Corresponds to Tailwind's 2xl breakpoint */
-            .timer-container {
-                max-width: 1200px; /* Wider container for PC */
-                padding: 3.5rem; /* More padding */
-            }
-            .timer-section {
-                gap: 2rem; /* Increase gap */
-            }
-            .timer-display {
-                font-size: 5.5rem; /* Larger font for timers */
-                padding: 2rem 3rem; /* More padding */
-                min-width: 320px; /* Ensure larger display */
-            }
-            .btn {
-                padding: 1.2rem 2.4rem; /* Larger buttons */
-                max-width: 300px; /* Wider buttons */
-            }
-            h2 {
-                font-size: 2.5rem; /* Larger headings */
-            }
-            .dropdown-container {
-                max-width: 300px; /* Wider dropdown */
-            }
-            .dropdown-trigger {
-                font-size: 1.125rem; /* Larger dropdown font */
-                padding: 1rem 1.25rem; /* Larger dropdown padding */
-            }
-            .dropdown-option {
-                font-size: 1.125rem; /* Larger dropdown option font */
-                padding: 1rem 1.25rem; /* Larger dropdown option padding */
-            }
-        }
-
-        /* Mobile (No sticky behavior for full height) */
-        @media (max-width: 767px) { /* For screens smaller than md breakpoint */
-            .timer-container {
-                border-radius: 1rem;
-                padding: 2.5rem;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            }
-            body {
-                align-items: center; /* Ensure vertical centering */
-            }
         }
     </style>
 </head>
@@ -436,19 +459,6 @@
             document.getElementById('closeAlert').addEventListener('click', () => {
                 clearInterval(overtimeInterval); // Stop overtime timer when alert is closed
                 alertBox.remove();
-            });
-        }
-
-        // PWA: Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
             });
         }
     </script>
