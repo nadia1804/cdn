@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timer Pembelajaran - Desain 4</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap 3 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Global box-sizing for consistent layout */
@@ -24,37 +26,32 @@
             display: flex; /* Use flexbox for centering */
             justify-content: center; /* Center horizontally */
             align-items: center; /* Center vertically */
-            padding: 1rem; /* Padding around the main container, responsive */
+            padding: 20px; /* Padding around the main container */
             min-height: 100vh; /* Ensure full viewport height */
         }
-        .timer-container {
+
+        .timer-container-wrapper {
             background-color: #ffffff;
             border-radius: 1rem;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 1000px; /* Max width for larger screens */
-            height: 100%; /* Take full available height within padding */
+            padding: 2.5rem; /* Default padding inside container */
             display: flex;
-            flex-direction: column; /* Main container is a column */
-            padding: 1.5rem; /* Default padding inside container */
-            align-items: center; /* Center content horizontally */
-            justify-content: center; /* Vertically center all content (dropdown + timers) */
+            flex-direction: column;
+            align-items: center;
             gap: 2rem; /* Gap between dropdown and main timers wrapper */
         }
-        @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
-            .timer-container {
-                padding: 2.5rem; /* More padding on larger screens */
-                gap: 3rem; /* Larger gap on larger screens */
-            }
-        }
-        @media (min-width: 1024px) { /* Large screens (desktop) */
-            .timer-container {
-                max-width: 1200px; /* Even wider for large desktops */
+
+        @media (min-width: 992px) { /* Medium screens and up (Bootstrap's md breakpoint) */
+            .timer-container-wrapper {
+                max-width: 1200px; /* Wider for large desktops */
                 padding: 3.5rem;
+                gap: 3rem; /* Larger gap */
             }
         }
 
-        .main-timers-wrapper {
+        .main-timers-row {
             display: flex;
             flex-direction: column; /* Default to column for mobile */
             width: 100%;
@@ -63,8 +60,9 @@
             justify-content: center; /* Center timers vertically within the wrapper */
             align-items: center; /* Center timers horizontally within the wrapper */
         }
-        @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
-            .main-timers-wrapper {
+
+        @media (min-width: 768px) { /* Small screens and up (Bootstrap's sm breakpoint) */
+            .main-timers-row {
                 flex-direction: row; /* Row for larger screens */
                 justify-content: center; /* Center horizontally */
                 gap: 3rem; /* Larger gap */
@@ -80,6 +78,7 @@
             gap: 1rem; /* Consistent gap within section */
             width: 100%; /* Ensure sections take full width on mobile */
         }
+
         @media (min-width: 768px) {
             .timer-section {
                 gap: 1.5rem; /* Larger gap within section on larger screens */
@@ -97,6 +96,7 @@
             max-width: 280px; /* Max width for the display box */
             text-align: center;
         }
+
         @media (min-width: 768px) {
             .timer-display {
                 font-size: 4.5rem; /* Larger on tablet/desktop */
@@ -104,7 +104,8 @@
                 min-width: 280px; /* Ensure minimum width */
             }
         }
-        @media (min-width: 1280px) {
+
+        @media (min-width: 1200px) { /* Bootstrap's lg breakpoint */
             .timer-display {
                 font-size: 5.5rem; /* Even larger on big PC screens */
                 padding: 2rem 3rem;
@@ -112,7 +113,7 @@
             }
         }
 
-        .btn {
+        .btn-custom { /* Custom class for button sizing */
             padding: 0.8rem 1.6rem; /* Default button padding */
             border-radius: 0.75rem;
             font-weight: 600;
@@ -121,36 +122,46 @@
             width: 100%; /* Buttons take full width of their parent */
             max-width: 250px; /* Max width for buttons */
         }
+
         @media (min-width: 768px) {
-            .btn {
+            .btn-custom {
                 padding: 0.9rem 1.8rem; /* Slightly larger on tablet/desktop */
             }
         }
-        @media (min-width: 1280px) {
-            .btn {
+
+        @media (min-width: 1200px) {
+            .btn-custom {
                 padding: 1.2rem 2.4rem; /* Even larger on big PC screens */
                 max-width: 300px;
             }
         }
-
-        .btn-primary {
-            background-color: #3b82f6;
+        
+        /* Bootstrap button overrides for specific colors */
+        .btn-primary-custom {
+            background-color: #3b82f6; /* Blue 500 */
             color: #ffffff;
+            border-color: #3b82f6;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary-custom:hover, .btn-primary-custom:focus {
+            background-color: #2563eb; /* Blue 600 */
+            border-color: #2563eb;
+            color: #ffffff;
             transform: translateY(-2px);
         }
-        .btn-danger {
-            background-color: #ef4444;
+        .btn-danger-custom {
+            background-color: #ef4444; /* Red 500 */
             color: #ffffff;
+            border-color: #ef4444;
             box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
         }
-        .btn-danger:hover {
-            background-color: #dc2626;
+        .btn-danger-custom:hover, .btn-danger-custom:focus {
+            background-color: #dc2626; /* Red 600 */
+            border-color: #dc2626;
+            color: #ffffff;
             transform: translateY(-2px);
         }
+
         h2 {
             color: #2d3748;
             font-size: 1.75rem; /* Default heading size for mobile */
@@ -160,7 +171,7 @@
                 font-size: 2.25rem; /* Larger on tablet/desktop */
             }
         }
-        @media (min-width: 1280px) {
+        @media (min-width: 1200px) {
             h2 {
                 font-size: 2.5rem; /* Even larger on big PC screens */
             }
@@ -176,8 +187,9 @@
             max-width: 250px; /* Max width for dropdown */
             position: relative; /* For dropdown options positioning */
             z-index: 20; /* Ensure it's above other content */
+            margin-bottom: 2rem; /* Space below dropdown */
         }
-        @media (min-width: 1280px) {
+        @media (min-width: 1200px) {
             .dropdown-container {
                 max-width: 300px; /* Wider dropdown on big PC screens */
             }
@@ -203,7 +215,7 @@
             background-color: #e2e8f0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        @media (min-width: 1280px) {
+        @media (min-width: 1200px) {
             .dropdown-trigger {
                 font-size: 1.125rem; /* Larger dropdown font */
                 padding: 1rem 1.25rem; /* Larger dropdown padding */
@@ -240,22 +252,37 @@
         }
 
         /* Custom Alert specific styles */
-        #customAlert {
+        .custom-alert-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050; /* Higher than Bootstrap modals */
         }
-        #customAlert > div {
+        .custom-alert-content {
             background-color: #ffffff;
             padding: 2rem;
             border-radius: 1rem;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
         }
         #overtimeDisplayInAlert {
             color: #dc2626; /* Red-600 */
+            font-size: 2.25rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 1.5rem; /* mb-6 */
         }
     </style>
 </head>
 <body>
-    <div class="timer-container">
+    <div class="container timer-container-wrapper">
         <!-- Dropdown for School Level -->
         <div class="dropdown-container">
             <div id="selectedLevelDisplay" class="dropdown-trigger">
@@ -272,22 +299,36 @@
             </div>
         </div>
 
-        <div class="main-timers-wrapper">
+        <div class="row main-timers-row">
             <!-- Countdown Timer Section -->
-            <div class="timer-section">
-                <h2 class="text-3xl font-bold mb-4">Sisa Waktu</h2>
+            <div class="col-xs-12 col-sm-6 timer-section">
+                <h2 class="text-center">Sisa Waktu</h2>
                 <div id="countdownDisplay" class="timer-display">90:00</div>
-                <button id="startCountdown" class="btn btn-primary">MULAI</button>
+                <button id="startCountdown" class="btn btn-primary-custom btn-lg btn-custom">MULAI</button>
             </div>
 
             <!-- Stopwatch Timer Section -->
-            <div class="timer-section">
-                <h2 class="text-3xl font-bold mb-4">Waktu Tempuh</h2>
+            <div class="col-xs-12 col-sm-6 timer-section">
+                <h2 class="text-center">Waktu Tempuh</h2>
                 <div id="stopwatchDisplay" class="timer-display">00:00</div>
-                <button id="resetTimers" class="btn btn-danger">RESET</button>
+                <button id="resetTimers" class="btn btn-danger-custom btn-lg btn-custom">RESET</button>
             </div>
         </div>
     </div>
+
+    <!-- Custom Alert Modal Structure -->
+    <div id="customAlert" class="custom-alert-backdrop hidden">
+        <div class="custom-alert-content">
+            <p class="text-xl font-semibold text-gray-800 mb-4">Waktu hitung mundur telah habis!</p>
+            <div id="overtimeDisplayInAlert"></div>
+            <button id="closeAlert" class="btn btn-primary-custom btn-custom">Oke</button>
+        </div>
+    </div>
+
+    <!-- jQuery (required for Bootstrap) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap 3 JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script>
         // Global variable for overtime interval and start time
@@ -442,31 +483,27 @@
             }
             
             // No alertUser call here for reset, as per your request.
-            // You can add a console.log here for debugging if needed:
-            // console.log("Semua timer telah direset!");
         }
 
         resetTimersBtn.addEventListener('click', resetTimers);
 
         // --- Custom Alert Function (instead of window.alert) ---
         function alertUser(message) {
-            const existingAlert = document.getElementById('customAlert');
-            if (existingAlert) existingAlert.remove(); // Remove previous alert if exists
-
-            const alertBox = document.createElement('div');
-            alertBox.id = 'customAlert';
-            alertBox.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
-            alertBox.innerHTML = `
-                <div class="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full text-center">
-                    <p class="text-xl font-semibold text-gray-800 mb-4">${message}</p>
-                    <div id="overtimeDisplayInAlert" class="text-3xl font-bold text-red-600 mb-6"></div>
-                    <button id="closeAlert" class="btn btn-primary w-full">Oke</button>
-                </div>
-            `;
-            document.body.appendChild(alertBox);
-
+            const alertBox = document.getElementById('customAlert');
             const overtimeDisplayInAlert = document.getElementById('overtimeDisplayInAlert');
+            const closeAlertBtn = document.getElementById('closeAlert');
+
+            // Set initial message and show alert
+            alertBox.querySelector('p').textContent = message;
+            overtimeDisplayInAlert.textContent = ''; // Clear previous overtime display
+            alertBox.classList.remove('hidden');
+
             overtimeStartTime = Date.now(); // Start counting from when the alert appears
+
+            // Clear any existing overtime interval before starting a new one
+            if (overtimeInterval) {
+                clearInterval(overtimeInterval);
+            }
 
             // Start overtime timer
             overtimeInterval = setInterval(() => {
@@ -474,10 +511,10 @@
                 overtimeDisplayInAlert.textContent = `Waktu Berlebih: ${formatStopwatchTime(elapsedOvertime)}`;
             }, 1000); // Update every second
 
-            document.getElementById('closeAlert').addEventListener('click', () => {
+            closeAlertBtn.onclick = () => {
                 clearInterval(overtimeInterval); // Stop overtime timer when alert is closed
-                alertBox.remove();
-            });
+                alertBox.classList.add('hidden');
+            };
         }
     </script>
 </body>
