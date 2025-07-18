@@ -40,7 +40,7 @@
             flex-direction: column; /* Main container is a column */
             padding: 1.5rem; /* Default padding inside container */
             align-items: center; /* Center content horizontally */
-            justify-content: flex-start; /* Align content to the top, space handled by gaps */
+            justify-content: center; /* Vertically center all content (dropdown + timers) */
             gap: 2rem; /* Gap between dropdown and main timers wrapper */
         }
         @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
@@ -68,7 +68,7 @@
         @media (min-width: 768px) { /* Medium screens and up (tablet/desktop) */
             .main-timers-wrapper {
                 flex-direction: row; /* Row for larger screens */
-                justify-content: space-around; /* Distribute horizontally */
+                justify-content: center; /* Center horizontally */
                 gap: 3rem; /* Larger gap */
             }
         }
@@ -77,7 +77,8 @@
             flex: 1; /* Each section takes equal space */
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Center items horizontally within section */
+            justify-content: center; /* Center items vertically within section */
             gap: 1rem; /* Consistent gap within section */
             width: 100%; /* Ensure sections take full width on mobile */
         }
@@ -169,14 +170,14 @@
 
         /* Dropdown specific styles */
         .dropdown-container {
-            /* No absolute positioning anymore, let flexbox handle it */
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
             width: 100%;
             max-width: 250px; /* Max width for dropdown */
-            /* Removed margin-bottom as gap on timer-container handles spacing */
+            position: relative; /* For dropdown options positioning */
+            z-index: 20; /* Ensure it's above other content */
         }
         @media (min-width: 1280px) {
             .dropdown-container {
@@ -199,7 +200,6 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.2s ease-in-out;
-            position: relative; /* For dropdown options positioning */
         }
         .dropdown-trigger:hover {
             background-color: #e2e8f0;
