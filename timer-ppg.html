@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer Pembelajaran PPG</title>
+    <title>Timer Pembelajaran - Desain 4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Meta Cache: Cache for 1 year -->
@@ -199,6 +199,7 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.2s ease-in-out;
+            position: relative; /* For dropdown options positioning */
         }
         .dropdown-trigger:hover {
             background-color: #e2e8f0;
@@ -238,6 +239,20 @@
         }
         .hidden {
             display: none !important;
+        }
+
+        /* Custom Alert specific styles */
+        #customAlert {
+            background-color: rgba(0, 0, 0, 0.75);
+        }
+        #customAlert > div {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        #overtimeDisplayInAlert {
+            color: #dc2626; /* Red-600 */
         }
     </style>
 </head>
@@ -420,12 +435,17 @@
             stopwatchStartTime = 0;
             stopwatchDisplay.textContent = "00:00";
 
-            // Clear overtime interval if it's running
+            // Clear overtime interval if it's running (important for the fix)
             if (overtimeInterval) {
                 clearInterval(overtimeInterval);
+                // Ensure the alert box is removed if it was showing overtime
+                const existingAlert = document.getElementById('customAlert');
+                if (existingAlert) existingAlert.remove();
             }
             
-            alertUser("Semua timer telah direset!"); // Custom alert function
+            // No alertUser call here for reset, as per your request.
+            // You can add a console.log here for debugging if needed:
+            // console.log("Semua timer telah direset!");
         }
 
         resetTimersBtn.addEventListener('click', resetTimers);
