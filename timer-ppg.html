@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer Pembelajaran - Desain 4</title>
+    <title>Timer Pembelajaran</title>
     <!-- Bootstrap 3 CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Global box-sizing for consistent layout */
         *, *::before, *::after {
@@ -15,147 +15,95 @@
         }
 
         html, body {
-            height: 100%; /* Make html and body take full viewport height */
+            height: 100%;
             margin: 0;
-            padding: 0; /* Remove default padding */
+            padding: 0;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex; /* Use flexbox for centering */
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            padding: 20px; /* Padding around the main container */
-            min-height: 100vh; /* Ensure full viewport height */
-        }
-
-        .timer-container-wrapper {
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 1000px; /* Max width for larger screens */
-            padding: 2.5rem; /* Default padding inside container */
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 2rem; /* Gap between dropdown and main timers wrapper */
+            min-height: 100vh;
+            padding: 20px; /* Padding around the main container */
         }
 
-        @media (min-width: 992px) { /* Medium screens and up (Bootstrap's md breakpoint) */
-            .timer-container-wrapper {
-                max-width: 1200px; /* Wider for large desktops */
-                padding: 3.5rem;
-                gap: 3rem; /* Larger gap */
-            }
-        }
-
-        .main-timers-row {
-            display: flex;
-            flex-direction: column; /* Default to column for mobile */
-            width: 100%;
-            gap: 2rem; /* Gap between timer sections */
-            flex-grow: 1; /* Allow this wrapper to grow and take available space */
-            justify-content: center; /* Center timers vertically within the wrapper */
-            align-items: center; /* Center timers horizontally within the wrapper */
-        }
-
-        @media (min-width: 768px) { /* Small screens and up (Bootstrap's sm breakpoint) */
-            .main-timers-row {
-                flex-direction: row; /* Row for larger screens */
-                justify-content: center; /* Center horizontally */
-                gap: 3rem; /* Larger gap */
-            }
-        }
-
-        .timer-section {
-            flex: 1; /* Each section takes equal space */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center items horizontally within section */
-            justify-content: center; /* Center items vertically within section */
-            gap: 1rem; /* Consistent gap within section */
-            width: 100%; /* Ensure sections take full width on mobile */
-        }
-
-        @media (min-width: 768px) {
-            .timer-section {
-                gap: 1.5rem; /* Larger gap within section on larger screens */
-            }
+        .panel-custom {
+            background-color: #ffffff;
+            border-radius: 10px; /* Rounded corners for panels */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border: none; /* Remove default panel border */
         }
 
         .timer-display {
-            font-size: 3rem; /* Default font size for mobile */
+            font-size: 3em; /* Default font size for mobile */
             font-weight: 700;
             color: #2c5282;
             background-color: #e2e8f0;
-            padding: 1rem 1.5rem; /* Default padding */
-            border-radius: 0.75rem;
-            width: 100%; /* Take full width of its parent */
+            padding: 15px 25px;
+            border-radius: 8px;
+            width: 100%;
             max-width: 280px; /* Max width for the display box */
             text-align: center;
+            margin: 0 auto 20px auto; /* Center and add bottom margin */
         }
 
-        @media (min-width: 768px) {
+        /* Responsive adjustments for timer display */
+        @media (min-width: 768px) { /* Small devices (tablets) */
             .timer-display {
-                font-size: 4.5rem; /* Larger on tablet/desktop */
-                padding: 1.5rem 2.5rem;
-                min-width: 280px; /* Ensure minimum width */
+                font-size: 4.5em;
+                padding: 20px 30px;
+            }
+        }
+        @media (min-width: 992px) { /* Medium devices (desktops) */
+            .timer-display {
+                font-size: 5.5em;
+                padding: 25px 40px;
+                max-width: 320px;
             }
         }
 
-        @media (min-width: 1200px) { /* Bootstrap's lg breakpoint */
-            .timer-display {
-                font-size: 5.5rem; /* Even larger on big PC screens */
-                padding: 2rem 3rem;
-                min-width: 320px;
-            }
-        }
-
-        .btn-custom { /* Custom class for button sizing */
-            padding: 0.8rem 1.6rem; /* Default button padding */
-            border-radius: 0.75rem;
+        .btn-custom {
             font-weight: 600;
+            border-radius: 8px;
+            padding: 12px 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            width: 100%; /* Buttons take full width of their parent */
+            width: 100%; /* Full width within column */
             max-width: 250px; /* Max width for buttons */
+            margin: 0 auto; /* Center buttons */
         }
 
-        @media (min-width: 768px) {
+        /* Responsive adjustments for buttons */
+        @media (min-width: 992px) {
             .btn-custom {
-                padding: 0.9rem 1.8rem; /* Slightly larger on tablet/desktop */
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .btn-custom {
-                padding: 1.2rem 2.4rem; /* Even larger on big PC screens */
+                padding: 15px 30px;
                 max-width: 300px;
             }
         }
-        
-        /* Bootstrap button overrides for specific colors */
+
         .btn-primary-custom {
             background-color: #3b82f6; /* Blue 500 */
-            color: #ffffff;
             border-color: #3b82f6;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            color: #ffffff;
         }
-        .btn-primary-custom:hover, .btn-primary-custom:focus {
+        .btn-primary-custom:hover, .btn-primary-custom:focus, .btn-primary-custom:active {
             background-color: #2563eb; /* Blue 600 */
             border-color: #2563eb;
             color: #ffffff;
             transform: translateY(-2px);
         }
+
         .btn-danger-custom {
             background-color: #ef4444; /* Red 500 */
-            color: #ffffff;
             border-color: #ef4444;
-            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+            color: #ffffff;
         }
-        .btn-danger-custom:hover, .btn-danger-custom:focus {
+        .btn-danger-custom:hover, .btn-danger-custom:focus, .btn-danger-custom:active {
             background-color: #dc2626; /* Red 600 */
             border-color: #dc2626;
             color: #ffffff;
@@ -164,82 +112,85 @@
 
         h2 {
             color: #2d3748;
-            font-size: 1.75rem; /* Default heading size for mobile */
+            font-size: 1.75em; /* Default heading size for mobile */
+            margin-top: 0;
+            margin-bottom: 20px;
         }
         @media (min-width: 768px) {
             h2 {
-                font-size: 2.25rem; /* Larger on tablet/desktop */
+                font-size: 2.25em;
             }
         }
-        @media (min-width: 1200px) {
+        @media (min-width: 992px) {
             h2 {
-                font-size: 2.5rem; /* Even larger on big PC screens */
+                font-size: 2.5em;
             }
         }
 
-        /* Dropdown specific styles */
-        .dropdown-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
+        /* Custom Dropdown Styles (mimicking Bootstrap dropdown but with span) */
+        .custom-dropdown {
+            position: relative;
+            display: inline-block; /* Allows centering */
             width: 100%;
-            max-width: 250px; /* Max width for dropdown */
-            position: relative; /* For dropdown options positioning */
-            z-index: 20; /* Ensure it's above other content */
-            margin-bottom: 2rem; /* Space below dropdown */
+            max-width: 250px; /* Match button max-width */
+            margin-bottom: 30px; /* Space below dropdown */
+            text-align: center; /* Center the trigger */
         }
-        @media (min-width: 1200px) {
-            .dropdown-container {
-                max-width: 300px; /* Wider dropdown on big PC screens */
+        @media (min-width: 992px) {
+            .custom-dropdown {
+                max-width: 300px;
             }
         }
 
         .dropdown-trigger {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            border: 2px solid #a5b4fc;
             background-color: #eef2ff;
-            font-size: 1rem;
             color: #2c5282;
-            text-align: center;
+            padding: 10px 15px;
+            border: 2px solid #a5b4fc;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1em;
+            font-weight: 600;
             transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .dropdown-trigger:hover {
             background-color: #e2e8f0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        @media (min-width: 1200px) {
+        @media (min-width: 992px) {
             .dropdown-trigger {
-                font-size: 1.125rem; /* Larger dropdown font */
-                padding: 1rem 1.25rem; /* Larger dropdown padding */
+                font-size: 1.125em;
+                padding: 12px 18px;
             }
         }
 
         .dropdown-options {
-            position: absolute; /* Keep options absolute relative to trigger */
-            top: calc(100% + 10px); /* Position below the trigger with some gap */
+            position: absolute;
+            top: 100%; /* Position below the trigger */
+            left: 0;
+            right: 0;
             background-color: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 100%;
-            max-height: 200px; /* Limit height for scroll if many options */
-            overflow-y: auto;
-            z-index: 20; /* Ensure it's above other content */
             border: 1px solid #a5b4fc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it's above other content */
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 5px; /* Small gap below trigger */
         }
+
         .dropdown-option {
-            padding: 0.75rem 1rem;
+            padding: 10px 15px;
             cursor: pointer;
             color: #2c5282;
+            font-size: 1em;
             transition: background-color 0.1s ease-in-out;
-            display: block; /* Make each option a block */
+            display: block;
+            text-align: left;
         }
         .dropdown-option:hover {
             background-color: #eef2ff;
@@ -251,7 +202,7 @@
             display: none !important;
         }
 
-        /* Custom Alert specific styles */
+        /* Custom Alert Modal (mimicking Bootstrap modal) */
         .custom-alert-backdrop {
             position: fixed;
             top: 0;
@@ -266,28 +217,29 @@
         }
         .custom-alert-content {
             background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 1rem;
+            padding: 30px;
+            border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            max-width: 350px;
+            max-width: 380px;
             width: 90%;
             text-align: center;
         }
         #overtimeDisplayInAlert {
             color: #dc2626; /* Red-600 */
-            font-size: 2.25rem; /* text-3xl */
+            font-size: 2.25em; /* text-3xl */
             font-weight: 700; /* font-bold */
-            margin-bottom: 1.5rem; /* mb-6 */
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container timer-container-wrapper">
         <!-- Dropdown for School Level -->
-        <div class="dropdown-container">
+        <div class="custom-dropdown">
             <div id="selectedLevelDisplay" class="dropdown-trigger">
                 SMA (90 menit)
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-2">
+                <!-- SVG for dropdown arrow -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-2" style="width: 20px; height: 20px;">
                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                 </svg>
             </div>
@@ -299,19 +251,23 @@
             </div>
         </div>
 
-        <div class="row main-timers-row">
+        <div class="row" style="width: 100%; display: flex; flex-wrap: wrap; justify-content: center;">
             <!-- Countdown Timer Section -->
-            <div class="col-xs-12 col-sm-6 timer-section">
-                <h2 class="text-center">Sisa Waktu</h2>
-                <div id="countdownDisplay" class="timer-display">90:00</div>
-                <button id="startCountdown" class="btn btn-primary-custom btn-lg btn-custom">MULAI</button>
+            <div class="col-xs-12 col-sm-6 text-center">
+                <div class="panel panel-custom">
+                    <h2>Sisa Waktu</h2>
+                    <div id="countdownDisplay" class="timer-display">90:00</div>
+                    <button id="startCountdown" class="btn btn-primary-custom btn-lg btn-custom">MULAI</button>
+                </div>
             </div>
 
             <!-- Stopwatch Timer Section -->
-            <div class="col-xs-12 col-sm-6 timer-section">
-                <h2 class="text-center">Waktu Tempuh</h2>
-                <div id="stopwatchDisplay" class="timer-display">00:00</div>
-                <button id="resetTimers" class="btn btn-danger-custom btn-lg btn-custom">RESET</button>
+            <div class="col-xs-12 col-sm-6 text-center">
+                <div class="panel panel-custom">
+                    <h2>Waktu Tempuh</h2>
+                    <div id="stopwatchDisplay" class="timer-display">00:00</div>
+                    <button id="resetTimers" class="btn btn-danger-custom btn-lg btn-custom">RESET</button>
+                </div>
             </div>
         </div>
     </div>
@@ -319,7 +275,7 @@
     <!-- Custom Alert Modal Structure -->
     <div id="customAlert" class="custom-alert-backdrop hidden">
         <div class="custom-alert-content">
-            <p class="text-xl font-semibold text-gray-800 mb-4">Waktu hitung mundur telah habis!</p>
+            <p class="lead text-gray-800">Waktu hitung mundur telah habis!</p>
             <div id="overtimeDisplayInAlert"></div>
             <button id="closeAlert" class="btn btn-primary-custom btn-custom">Oke</button>
         </div>
@@ -410,7 +366,7 @@
 
         // Close dropdown if clicked outside
         document.addEventListener('click', function(event) {
-            if (!event.target.closest('.dropdown-container') && !schoolLevelOptions.classList.contains('hidden')) {
+            if (!event.target.closest('.custom-dropdown') && !schoolLevelOptions.classList.contains('hidden')) {
                 schoolLevelOptions.classList.add('hidden');
             }
         });
@@ -421,6 +377,9 @@
             svg.setAttribute("viewBox", "0 0 20 20");
             svg.setAttribute("fill", "currentColor");
             svg.classList.add("w-5", "h-5", "ml-2");
+            svg.style.width = '20px'; /* Ensure explicit size for SVG */
+            svg.style.height = '20px';
+            svg.style.marginLeft = '8px'; /* Add some margin */
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
             path.setAttribute("fill-rule", "evenodd");
             path.setAttribute("d", "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z");
@@ -474,12 +433,11 @@
             stopwatchStartTime = 0;
             stopwatchDisplay.textContent = "00:00";
 
-            // Clear overtime interval if it's running (important for the fix)
+            // Clear overtime interval if it's running
             if (overtimeInterval) {
                 clearInterval(overtimeInterval);
-                // Ensure the alert box is removed if it was showing overtime
                 const existingAlert = document.getElementById('customAlert');
-                if (existingAlert) existingAlert.remove();
+                if (existingAlert) existingAlert.classList.add('hidden'); // Hide the alert if it was showing
             }
             
             // No alertUser call here for reset, as per your request.
