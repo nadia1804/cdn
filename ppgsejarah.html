@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Sejarah Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #334155;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            flex-direction: column; /* Default to column for small screens */
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row; /* Change to row for larger screens */
+            }
+            .quiz-section {
+                margin-right: 20px; /* Add margin between sections */
+            }
+        }
+        .quiz-section {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            flex: 3; /* Take more space */
+            display: flex;
+            flex-direction: column;
+        }
+        .navigation-section {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1; /* Take less space */
+        }
+        .question-container {
+            margin-bottom: 25px;
+        }
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #1a202c;
+        }
+        .options-container label {
+            display: flex;
+            align-items: flex-start;
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        .options-container label:hover {
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
+        }
+        .options-container input[type="radio"],
+        .options-container input[type="checkbox"] {
+            margin-right: 15px;
+            margin-top: 4px;
+            transform: scale(1.2);
+            accent-color: #4299e1; /* Tailwind blue-500 equivalent */
+        }
+        .options-container label.correct {
+            background-color: #d4edda; /* Light green */
+            border-color: #28a745; /* Green */
+            color: #155724; /* Dark green text */
+        }
+        .options-container label.incorrect {
+            background-color: #f8d7da; /* Light red */
+            border-color: #dc3545; /* Red */
+            color: #721c24; /* Dark red text */
+        }
+        .options-container label.correct input[type="radio"],
+        .options-container label.incorrect input[type="radio"],
+        .options-container label.correct input[type="checkbox"],
+        .options-container label.incorrect input[type="checkbox"] {
+            accent-color: #155724; /* Dark green */
+        }
+
+        /* Styles for True/False questions */
+        .true-false-statement {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        .true-false-statement .statement-text {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .true-false-statement .tf-options label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
+            background-color: transparent; /* Override parent label style */
+            border: none; /* Override parent label style */
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .true-false-statement .tf-options input[type="radio"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+        .true-false-statement.correct-statement {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .true-false-statement.incorrect-statement {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+
+        .feedback-container {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .feedback-container.correct {
+            background-color: #e6fffa;
+            border: 1px solid #38b2ac;
+            color: #2c7a7b;
+        }
+        .feedback-container.incorrect {
+            background-color: #fff5f5;
+            border: 1px solid #e53e3e;
+            color: #c53030;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex-grow: 1;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #4299e1;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #3182ce;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #2d3748;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .btn-disabled {
+            background-color: #cbd5e0;
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .nav-btn {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #e2e8f0;
+            color: #2d3748;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: 1px solid #cbd5e0;
+        }
+        .nav-btn:hover {
+            background-color: #cbd5e0;
+        }
+        .nav-btn.active {
+            background-color: #4299e1;
+            color: #ffffff;
+            border-color: #4299e1;
+        }
+        .nav-btn.answered {
+            background-color: #9ae6b4; /* Light green for answered */
+            border-color: #38a169;
+            color: #2d3748;
+        }
+        .nav-btn.answered.active {
+            background-color: #38a169; /* Darker green for active answered */
+            color: #ffffff;
+        }
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #e2e8f0;
+            display: none; /* Hidden by default */
+        }
+        .message-box h3 {
+            font-size: 1.5rem;
+            color: #1a202c;
+            margin-bottom: 15px;
+        }
+        .message-box p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+        .message-box button {
+            background-color: #4299e1;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .message-box button:hover {
+            background-color: #3182ce;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Layout 1: Soal -->
+        <div class="quiz-section">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Ujian Sejarah</h2>
+            <div id="question-display" class="question-container">
+                <!-- Soal akan dimuat di sini -->
+            </div>
+            <div id="feedback-display" class="feedback-container hidden">
+                <!-- Feedback akan dimuat di sini -->
+            </div>
+            <div class="button-group">
+                <button id="prev-btn" class="btn btn-secondary btn-disabled">Sebelumnya</button>
+                <button id="check-btn" class="btn btn-primary">Cek Jawaban</button>
+                <button id="next-btn" class="btn btn-primary">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Layout 2: Navigasi Soal -->
+        <div class="navigation-section">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Navigasi Soal</h3>
+            <div id="navigation-grid" class="navigation-grid">
+                <!-- Tombol navigasi akan dimuat di sini -->
+            </div>
+            <button id="submit-quiz-btn" class="btn btn-primary w-full mt-6">Selesai Ujian</button>
+        </div>
+    </div>
+
+    <!-- Message Box for alerts -->
+    <div id="message-box" class="message-box">
+        <h3 id="message-title"></h3>
+        <p id="message-content"></p>
+        <button id="message-box-ok-btn">OK</button>
+    </div>
+
+    <script>
+        // Fungsi untuk menampilkan message box kustom
+        function showMessageBox(title, message) {
+            const msgBox = document.getElementById('message-box');
+            document.getElementById('message-title').innerText = title;
+            document.getElementById('message-content').innerText = message;
+            msgBox.style.display = 'block';
+        }
+
+        // Fungsi untuk menyembunyikan message box kustom
+        document.getElementById('message-box-ok-btn').addEventListener('click', () => {
+            document.getElementById('message-box').style.display = 'none';
+        });
+
+        const questions = [
+            {
+                id: 1,
+                type: 'single-choice',
+                question: `Seorang guru sejarah <b class="text-blue-600">memulai pelajaran</b> dengan menunjukkan sebuah video singkat tentang kehidupan pada masa kerajaan Majapahit. <b class="text-blue-600">Tujuan utama</b> kegiatan ini dalam <b class="text-blue-600">konteks apersepsi</b> adalah:`,
+                options: [
+                    "Mengisi waktu awal pelajaran agar peserta didik tidak bosan.",
+                    "Membuat peserta didik merasa santai sehingga guru bisa lebih fokus dalam mengajar.",
+                    "Menghubungkan materi yang akan dipelajari dengan pengetahuan awal peserta didik.",
+                    "Menguji pemahaman peserta didik tentang teknologi modern dan teknologi kuno pada masa Majapahit.",
+                    "Menunjukkan keterampilan teknologi guru kepada peserta didik."
+                ],
+                correctAnswer: "Menghubungkan materi yang akan dipelajari dengan pengetahuan awal peserta didik.",
+                explanation: `Apersepsi adalah kegiatan awal dalam pembelajaran yang bertujuan untuk menyiapkan mental dan menarik perhatian peserta didik agar siap menerima materi baru. Dalam konteks soal ini, guru menggunakan video singkat tentang kehidupan Majapahit sebagai apersepsi. Tujuan utamanya adalah membangkitkan minat peserta didik, mengaitkan materi baru (kerajaan Majapahit) dengan pengetahuan awal yang sudah mereka miliki, dan menciptakan jembatan antara pengalaman sebelumnya dengan materi yang akan diajarkan, sehingga mereka siap untuk pembelajaran yang lebih mendalam. Pilihan lain kurang tepat karena mengisi waktu, membuat santai, menguji pemahaman, atau menunjukkan keterampilan teknologi guru bukanlah tujuan utama dari apersepsi.`
+            },
+            {
+                id: 2,
+                type: 'single-choice',
+                question: `Seorang guru sejarah mencoba menggunakan <b class="text-blue-600">metode diskusi kelompok</b> untuk mengkaji peristiwa penting dalam sejarah. Setelah beberapa sesi, sebagian peserta didik terlihat <b class="text-blue-600">tidak aktif dan cenderung diam</b>. Langkah terbaik yang bisa diambil guru tersebut untuk <b class="text-blue-600">meningkatkan partisipasi</b> peserta didik dalam diskusi adalah:`,
+                options: [
+                    "Memberikan poin tambahan hanya kepada kelompok yang paling aktif.",
+                    "Membagi kelompok berdasarkan minat peserta didik terhadap topik tertentu.",
+                    "Mengurangi waktu diskusi dan meningkatkan waktu ceramah.",
+                    "Mengganti metode diskusi dengan metode ceramah sepenuhnya.",
+                    "Mengadakan kuis dadakan untuk menguji kesiapan peserta didik."
+                ],
+                correctAnswer: "Membagi kelompok berdasarkan minat peserta didik terhadap topik tertentu.",
+                explanation: `Untuk meningkatkan partisipasi peserta didik dalam diskusi kelompok, penting bagi guru untuk menciptakan lingkungan yang mendukung dan relevan bagi mereka. Membagi kelompok berdasarkan minat peserta didik terhadap topik tertentu dapat secara signifikan meningkatkan keterlibatan karena mereka akan merasa lebih termotivasi dan memiliki pengetahuan awal yang lebih dalam mengenai topik yang diminati. Hal ini mendorong rasa kepemilikan dan tanggung jawab dalam kelompok, berbeda dengan memberikan poin tambahan hanya pada kelompok aktif (yang bisa mengecilkan kelompok lain), mengurangi atau mengganti metode diskusi (yang menghilangkan manfaat diskusi), atau mengadakan kuis dadakan (yang bisa menambah tekanan dan bukan memotivasi partisipasi diskusi).`
+            },
+            {
+                id: 3,
+                type: 'single-choice',
+                question: `Seorang <b class="text-blue-600">guru sejarah</b> menggunakan <b class="text-blue-600">model pembelajaran</b> discovery learning dengan <b class="text-blue-600">meminta peserta didik mencari informasi</b> tentang peristiwa Proklamasi Kemerdekaan Indonesia secara mandiri. <b class="text-blue-600">Pengelolaan kelas yang paling tepat</b> yang dilakukan guru tersebut untuk dapat <b class="text-blue-600">mengevaluasi efektivitas model pembelajaran ini</b> adalah:`,
+                options: [
+                    "Menghitung jumlah referensi yang dibaca oleh peserta didik.",
+                    "Mengamati peningkatan partisipasi peserta didik dalam diskusi kelas.",
+                    "Menanyakan kepada peserta didik apakah mereka menyukai metode ini.",
+                    "Melihat berapa banyak peserta didik yang menyelesaikan tugas tepat waktu.",
+                    "Mengukur gaya belajar peserta didik di kelas sebelum pembelajaran berlangsung."
+                ],
+                correctAnswer: "Mengamati peningkatan partisipasi peserta didik dalam diskusi kelas.",
+                explanation: `Dalam model pembelajaran discovery learning, di mana peserta didik mencari informasi secara mandiri, efektivitas model pembelajaran ini paling baik dievaluasi melalui pengamatan partisipasi peserta didik dalam diskusi kelas. Hal ini karena diskusi mencerminkan sejauh mana peserta didik telah mengolah informasi yang mereka temukan dan mampu mengkonstruksi pengetahuannya sendiri. Peningkatan partisipasi menunjukkan bahwa mereka telah memahami materi dan mampu mengartikulasikan pemahaman tersebut. Pilihan lain kurang tepat karena: Menghitung jumlah referensi tidak secara langsung mengukur pemahaman atau konstruksi pengetahuan. Menanyakan kesukaan peserta didik lebih pada aspek afektif, bukan efektivitas pembelajaran. Penyelesaian tugas tepat waktu lebih mengukur kepatuhan, bukan kedalaman pemahaman. Mengukur gaya belajar dilakukan sebelum pembelajaran untuk perencanaan, bukan evaluasi efektivitas model pembelajaran.`
+            },
+            {
+                id: 4,
+                type: 'single-choice',
+                question: `Peserta didik diminta untuk <b class="text-blue-600">membuat presentasi digital</b> tentang perkembangan teknologi pada masa Perang Dunia II. <b class="text-blue-600">Rubrik yang paling tepat</b> yang dilakukan guru <b class="text-blue-600">dalam mengevaluasi keberhasilan proyek ini</b> dalam mengembangkan keterampilan teknis dan presentasi peserta didik adalah:`,
+                options: [
+                    "Jumlah slide dalam presentasi yang dibuat oleh peserta didik dalam memaparkan hasil proyek.",
+                    "Kualitas animasi dan efek visual yang digunakan oleh peserta didik dalam menyelesaikan proyek.",
+                    "Reaksi teman sekelas terhadap presentasi dari proyek yang dibuat oleh peserta didik.",
+                    "Waktu yang dihabiskan oleh peserta didik untuk menyelesaikan proyek dan membuat paparan presentasi.",
+                    "Ketepatan dan kejelasan informasi yang disajikan serta kemampuan peserta didik dalam mempresentasikan hasil proyek."
+                ],
+                correctAnswer: "Ketepatan dan kejelasan informasi yang disajikan serta kemampuan peserta didik dalam mempresentasikan hasil proyek.",
+                explanation: `Rubrik yang paling tepat untuk mengevaluasi keberhasilan proyek presentasi digital yang bertujuan mengembangkan keterampilan teknis dan presentasi adalah yang berfokus pada ketepatan dan kejelasan informasi serta kemampuan presentasi. Ini mencerminkan inti dari tujuan pembelajaran, yaitu penguasaan materi dan kemampuan mengkomunikasikannya secara efektif. Pilihan lain kurang tepat karena hanya mengukur aspek parsial atau tidak langsung terkait dengan tujuan utama proyek.`
+            },
+            {
+                id: 5,
+                type: 'single-choice',
+                question: `Guru meminta peserta didik untuk meneliti dan memberikan solusi atas masalah pertahanan dan keamanan dengan merefleksikan kasus yang dihadapi oleh kerajaan-kerajaan di Nusantara dalam menghadapi serangan asing pada abad ke-16. Kriteria yang terbaik oleh guru <b class="text-blue-600">dalam mengevaluasi kemampuan</b> peserta didik dalam mengembangkan solusi melalui <b class="text-blue-600">pembelajaran berbasis masalah</b> adalah:`,
+                options: [
+                    "Relevansi dan efektivitas solusi yang diusulkan berdasarkan analisis sejarah yang dilakukan.",
+                    "Panjang laporan solusi atas masalah yang dihadapi oleh kerajaan-kerajaan di Nusantara dalam menghadapi serangan asing pada abad ke-16 yang dibuat peserta didik.",
+                    "Jumlah solusi yang diusulkan atas masalah yang dihadapi oleh kerajaan-kerajaan di Nusantara dalam menghadapi serangan asing pada abad ke-16 oleh peserta didik.",
+                    "Kreativitas dalam presentasi solusi atas masalah yang dihadapi oleh kerajaan-kerajaan di Nusantara dalam menghadapi serangan asing pada abad ke-16.",
+                    "Waktu yang dihabiskan peserta didik dalam penelitian tentang berbagai kerajaan di Nusantara pada abad ke-16."
+                ],
+                correctAnswer: "Relevansi dan efektivitas solusi yang diusulkan berdasarkan analisis sejarah yang dilakukan.",
+                explanation: `Dalam pembelajaran berbasis masalah yang meminta peserta didik untuk meneliti dan memberikan solusi, kriteria evaluasi terbaik adalah yang berfokus pada relevansi dan efektivitas solusi yang diusulkan, didukung oleh analisis sejarah yang mendalam. Ini menunjukkan kemampuan peserta didik dalam menerapkan pemahaman sejarah untuk memecahkan masalah, yang merupakan inti dari pembelajaran berbasis masalah. Pilihan lain seperti panjang laporan, jumlah solusi, kreativitas presentasi, atau waktu penelitian adalah aspek pendukung, namun bukan indikator utama keberhasilan dalam mengembangkan solusi.`
+            },
+            {
+                id: 6,
+                type: 'single-choice',
+                question: `Guru sejarah menghadapi kesulitan dalam <b class="text-blue-600">membuat peserta didik tertarik</b> pada <b class="text-blue-600">topik tentang masa kolonial di Indonesia</b> karena peserta didik merasa topik ini terlalu jauh dari kehidupan mereka saat ini. <b class="text-blue-600">Pendekatan terbaik</b> yang dapat dilakukan guru untuk membuat topik ini lebih relevan dan <b class="text-blue-600">menarik</b> bagi peserta didik adalah:`,
+                options: [
+                    "Mengadakan kunjungan virtual ke situs-situs sejarah kolonial.",
+                    "Memberikan lebih banyak penjelasan teoritis tentang masa kolonial.",
+                    "Menyuruh peserta didik membaca buku teks sejarah dengan lebih teliti.",
+                    "Mengurangi fokus pada masa kolonial dan beralih ke topik lain yang lebih menarik.",
+                    "Menambahkan lebih banyak tugas tertulis tentang masa kolonial."
+                ],
+                correctAnswer: "Mengadakan kunjungan virtual ke situs-situs sejarah kolonial.",
+                explanation: `Untuk membuat peserta didik tertarik pada topik tentang masa kolonial, pendekatan terbaik adalah dengan membuat materi terasa lebih nyata dan relevan. Mengadakan kunjungan virtual ke situs-situs sejarah kolonial dapat memberikan pengalaman langsung yang imersif, membantu peserta didik menghubungkan peristiwa masa lalu dengan lokasi fisik saat ini, sehingga topik menjadi lebih menarik dan tidak terasa jauh dari kehidupan mereka. Pilihan lain cenderung bersifat pasif atau mengalihkan fokus dari tujuan utama.`
+            },
+            {
+                id: 7,
+                type: 'single-choice',
+                question: `Guru merancang sebuah unit pembelajaran tentang Perang Dunia II dengan <b class="text-blue-600">tujuan utama</b> agar peserta didik dapat <b class="text-blue-600">menganalisis dampak perang terhadap berbagai negara</b>. Langkah pertama yang diambil adalah memberikan latar belakang sejarah tentang penyebab perang. Langkah selanjutnya adalah membagi peserta didik ke dalam kelompok untuk meneliti dampak perang di berbagai negara. <b class="text-blue-600">Cara terbaik untuk mengevaluasi efektivitas desain pembelajaran ini</b> adalah:`,
+                options: [
+                    "Melihat apakah semua kelompok selesai tepat waktu dalam menganalisis dampak perang terhadap berbagai negara.",
+                    "Menghitung jumlah sumber yang digunakan oleh setiap kelompok dalam menganalisis dampak perang terhadap berbagai negara.",
+                    "Mengamati keaktifan peserta didik selama presentasi kelompok dalam menganalisis dampak perang terhadap berbagai negara.",
+                    "Memeriksa panjang laporan tentang analisis dampak perang terhadap berbagai negara dalam Perang Dunia II yang dibuat oleh setiap kelompok.",
+                    "Menilai kemampuan peserta didik dalam menghubungkan informasi latar belakang dengan analisis dampak perang yang mereka pelajari."
+                ],
+                correctAnswer: "Menilai kemampuan peserta didik dalam menghubungkan informasi latar belakang dengan analisis dampak perang yang mereka pelajari.",
+                explanation: `Untuk mengevaluasi efektivitas desain pembelajaran yang bertujuan agar peserta didik dapat menganalisis dampak perang, cara terbaik adalah dengan menilai kemampuan peserta didik dalam menghubungkan informasi latar belakang dengan analisis dampak perang yang mereka pelajari. Ini secara langsung mengukur pemahaman mendalam dan kemampuan analisis sesuai tujuan pembelajaran. Pilihan lain lebih berfokus pada aspek prosedural atau kuantitatif, bukan pada kualitas pemahaman dan analisis peserta didik.`
+            },
+            {
+                id: 8,
+                type: 'multiple-checkbox',
+                question: `Guru sejarah memberikan pembelajaran dengan <b class="text-blue-600">tujuan pembelajaran</b> "Melakukan mini riset melalui literatur berkaitan dengan penjajahan bangsa Eropa di Indonesia". <b class="text-blue-600">Langkah-langkah desain pembelajaran yang berpusat pada peserta didik yang paling tepat</b> adalah:`,
+                options: [
+                    "Peserta didik menuliskan rangkuman dari hasil film penjajahan Bangsa Eropa di Indonesia yang ditonton dan menyimpulkannya.",
+                    "Peserta didik mengumpulkan artikel jurnal tentang penjajahan Bangsa Eropa di Indonesia kemudian melakukan kajian pustaka dan menuliskan dalam laporan.",
+                    "Peserta didik datang ke perpustakaan dan mendengarkan penjelasan dari pustakawan tentang penjajahan Bangsa Eropa di Indonesia kemudian membuat resume.",
+                    "Peserta didik melakukan diskusi tentang penelitian penjajahan Bangsa Barat di Indonesia kemudian mendiskusikan di depan kelas.",
+                    "Peserta didik melakukan kunjungan lapangan ke tempat-tempat bersejarah kemudian menyimak penjelasan dari narasumber lapangan."
+                ],
+                correctAnswer: [
+                    "Peserta didik menuliskan rangkuman dari hasil film penjajahan Bangsa Eropa di Indonesia yang ditonton dan menyimpulkannya.",
+                    "Peserta didik mengumpulkan artikel jurnal tentang penjajahan Bangsa Eropa di Indonesia kemudian melakukan kajian pustaka dan menuliskan dalam laporan.",
+                    "Peserta didik melakukan diskusi tentang penelitian penjajahan Bangsa Barat di Indonesia kemudian mendiskusikan di depan kelas."
+                ],
+                explanation: `Langkah-langkah desain pembelajaran yang berpusat pada peserta didik untuk tujuan "mini riset melalui literatur" harus menekankan pada pencarian dan pengolahan informasi dari sumber tertulis secara mandiri. Mengumpulkan artikel jurnal dan melakukan kajian pustaka adalah yang paling sesuai. Mendatangi perpustakaan dan membuat resume juga relevan karena melibatkan akses ke sumber informasi dan pengolahan data oleh peserta didik, meskipun mendengarkan penjelasan pustakawan bukan riset literatur langsung. Pilihan lain kurang tepat karena tidak berfokus pada riset literatur atau lebih kepada aktivitas pasca-riset/metode pembelajaran yang berbeda.`
+            },
+            {
+                id: 9,
+                type: 'multiple-checkbox',
+                question: `Guru sejarah bermaksud melaksanakan pembelajaran yang relevan dengan kondisi di sekitar sekolah terkait konten kesejarahan dengan melibatkan peserta didik. <b class="text-blue-600">Desain pembelajaran yang sesuai</b> adalah:`,
+                options: [
+                    "Menerapkan pembelajaran berbasis proyek untuk mendorong peserta didik agar mampu memproduksi video animasi tentang organisasi-organisasi pergerakan nasional.",
+                    "Merancang pembelajaran berbasis proyek dengan melakukan mini riset tentang peninggalan sejarah Hindu Budha di lingkungan sekitar.",
+                    "Merancang pembelajaran berbasis masalah untuk mencari relevansi antara perjuangan diplomasi pasca kemerdekaan dengan permasalahan kekinian.",
+                    "Menerapkan pembelajaran studi kasus dengan mendiskusikan peristiwa revolusi lokal yang terjadi di sekitar lingkungan tempat tinggal peserta didik.",
+                    "Merancang pembelajaran dengan studi kasus tentang kebijakan-kebijakan Orde Reformasi dan pengaruhnya terhadap lingkungan masyarakat sekitar pada saat ini."
+                ],
+                correctAnswer: [
+                    "Merancang pembelajaran berbasis proyek dengan melakukan mini riset tentang peninggalan sejarah Hindu Budha di lingkungan sekitar.",
+                    "Menerapkan pembelajaran studi kasus dengan mendiskusikan peristiwa revolusi lokal yang terjadi di sekitar lingkungan tempat tinggal peserta didik.",
+                    "Merancang pembelajaran dengan studi kasus tentang kebijakan-kebijakan Orde Reformasi dan pengaruhnya terhadap lingkungan masyarakat sekitar pada saat ini."
+                ],
+                explanation: `Desain pembelajaran yang relevan dengan kondisi sekitar sekolah dan melibatkan peserta didik sebaiknya berfokus pada pendekatan yang aktif dan kontekstual. Pembelajaran berbasis proyek (PjBL) dan berbasis masalah (PBL) sangat sesuai karena mendorong peserta didik untuk melakukan riset, menciptakan produk, atau memecahkan masalah yang berkaitan langsung dengan lingkungan mereka atau isu-isu relevan. Pilihan yang melibatkan produksi video animasi, mini riset peninggalan sejarah di lingkungan sekitar, dan mencari relevansi perjuangan diplomasi dengan masalah kekinian adalah contoh desain yang memberdayakan peserta didik untuk berinteraksi dengan konten sejarah secara mendalam dan relevan. Sementara itu, studi kasus juga baik, namun pilihan yang diberikan kurang menekankan pada keterlibatan langsung dengan lingkungan sekitar atau produksi karya.`
+            },
+            {
+                id: 10,
+                type: 'single-choice',
+                question: `Setelah menyelesaikan penelitian sejarah lokal, guru meminta peserta didik untuk membuat pameran di sekolah yang menampilkan hasil penelitian mereka. Pameran ini akan dihadiri oleh peserta didik, guru, dan orang tua. <b class="text-blue-600">Tahap desain pembelajaran yang sedang digunakan oleh guru</b> adalah:`,
+                options: [
+                    "Pengantar teori melalui ceramah.",
+                    "Aktivitas eksplorasi melalui observasi lapangan.",
+                    "Evaluasi melalui proyek kreatif dan interaktif.",
+                    "Diskusi dan analisis hasil penelitian di kelas.",
+                    "Penyusunan laporan dan refleksi individu."
+                ],
+                correctAnswer: "Evaluasi melalui proyek kreatif dan interaktif.",
+                explanation: `Tahap desain pembelajaran di mana guru meminta peserta didik membuat pameran untuk menampilkan hasil penelitian mereka, yang akan dihadiri oleh berbagai pihak, menunjukkan bahwa guru sedang melakukan evaluasi melalui proyek kreatif dan interaktif. Pameran adalah bentuk penilaian yang memungkinkan peserta didik menunjukkan pemahaman mereka secara praktis dan interaktif, sekaligus melibatkan audiens yang lebih luas. Ini bukan lagi tahap pengantar, eksplorasi, diskusi awal, atau hanya penyusunan laporan, melainkan puncak dari proses pembelajaran yang bertujuan menilai hasil akhir.`
+            },
+            {
+                id: 11,
+                type: 'single-choice',
+                question: `Guru sejarah bermaksud melaksanakan pembelajaran sejarah agar peserta didik mampu menganalisis strategi perang dalam Perang Dunia II. <b class="text-blue-600">Sumber belajar yang paling tepat</b> digunakan untuk membantu peserta didik dalam menganalisis strategi perang adalah:`,
+                options: [
+                    "Peta pertempuran utama Perang Dunia II.",
+                    "Buku teks tentang Perang Eropa.",
+                    "Memoar veteran Perang Dunia II.",
+                    "Film fiksi tentang Perang Dunia II.",
+                    "Ensiklopedia Perang Dunia II."
+                ],
+                correctAnswer: "Ensiklopedia Perang Dunia II.",
+                explanation: `Tidak ada pembahasan karena jawaban ini sudah direvisi menjadi jawaban yang benar.`
+            },
+            {
+                id: 12,
+                type: 'single-choice',
+                question: `Guru meminta <b class="text-blue-600">peserta didik untuk menggunakan media sosial</b> agar pembelajaran sejarah menjadi menarik. Meskipun demikian, <b class="text-blue-600">pemanfaatan media sosial memiliki kelemahan</b>, yaitu:`,
+                options: [
+                    "Media sosial memungkinkan interaksi yang cepat dan mudah antarpeserta didik.",
+                    "Peserta didik dapat berbagi sumber daya dan ide secara langsung.",
+                    "Diskusi yang tidak terfokus dan dipenuhi dengan informasi yang tidak relevan.",
+                    "Media sosial dapat diakses dari berbagai perangkat.",
+                    "Teknologi informasi mendorong kolaborasi dan komunikasi."
+                ],
+                correctAnswer: "Diskusi yang tidak terfokus dan dipenuhi dengan informasi yang tidak relevan.",
+                explanation: `Meskipun media sosial menawarkan banyak keuntungan untuk interaksi dan berbagi informasi, kelemahan utamanya dalam konteks pembelajaran adalah potensi terjadinya diskusi yang tidak terfokus dan dipenuhi dengan informasi yang tidak relevan. Hal ini dapat mengalihkan perhatian peserta didik dari tujuan pembelajaran utama dan menyulitkan guru dalam mengelola serta memfilter konten yang disajikan. Pilihan lain merupakan kelebihan dari pemanfaatan media sosial.`
+            },
+            {
+                id: 13,
+                type: 'multiple-checkbox',
+                question: `Guru langkah dalam <b class="text-blue-600">menyusun strategi pembelajaran sejarah</b> dengan <b class="text-blue-600">materi perjuangan merebut kemerdekaan RI</b>. Oleh karena itu, <b class="text-blue-600">strategi yang paling tepat dalam meningkatkan minat belajar peserta didik</b> adalah:`,
+                options: [
+                    "Memberikan artikel terkait dengan materi dan hasil penelitian agar Siswa mendalami secara mandiri.",
+                    "Memilih model pembelajaran role playing dengan metode bermain peran.",
+                    "Memberikan buku ajar Siswa sesuai dengan pokok bahasan yang dipelajari.",
+                    "Menggunakan model pembelajaran Teams Games Tournament dengan membagi tim.",
+                    "Memberikan ringkasan materi tentang peristiwa perebutan kemerdekaan RI."
+                ],
+                correctAnswer: [
+                    "Memilih model pembelajaran role playing dengan metode bermain peran.",
+                    "Menggunakan model pembelajaran Teams Games Tournament dengan membagi tim."
+                ],
+                explanation: `Untuk meningkatkan minat belajar peserta didik dalam materi perjuangan merebut kemerdekaan RI, strategi yang paling tepat adalah yang melibatkan partisipasi aktif dan interaksi. Model pembelajaran role playing (bermain peran) memungkinkan peserta didik merasakan langsung peristiwa sejarah, sementara Teams Games Tournament (TGT) mendorong kompetisi sehat dan kolaborasi, keduanya efektif dalam meningkatkan minat dan keterlibatan. Pilihan lain cenderung bersifat pasif atau kurang interaktif.`
+            },
+            {
+                id: 14,
+                type: 'single-choice',
+                question: `Guru memberikan materi pembelajaran tentang bagaimana berpikir sejarah dalam mempelajari peristiwa sejarah. <b class="text-blue-600">Strategi yang paling tepat</b> dalam menumbuhkan <b class="text-blue-600">nalar kritis</b> peserta didik <b class="text-blue-600">KECUALI</b> ....`,
+                options: [
+                    "Memberikan contoh kasus beberapa peristiwa sejarah, peserta didik mensintesis peristiwa yang termasuk kausalita dan yang tidak.",
+                    "Menugaskan peserta didik menyusun laporan dengan mencari contoh peristiwa sejarah yang bersifat periodesasi.",
+                    "Memberikan pertanyaan tentang prosedur berpikir sejarah serta implementasinya dalam kehidupan sehari-hari.",
+                    "Memberikan bahan bacaan yang berasal jurnal ilmiah tentang metode berpikir sejarah dan peserta didik melakukan review dan diskusi kelompok.",
+                    "Memberikan penjelasan singkat tentang diakronik; sinkronik; kausalita; interprestasi; dan periodesasi."
+                ],
+                correctAnswer: "Memberikan penjelasan singkat tentang diakronik; sinkronik; kausalita; interprestasi; dan periodesasi.",
+                explanation: `Strategi yang paling tepat dalam menumbuhkan nalar kritis peserta didik dalam berpikir sejarah adalah yang melibatkan mereka secara aktif dalam menganalisis, mensintesis, dan menerapkan konsep-konsep sejarah. Memberikan contoh kasus, menugaskan penyusunan laporan, memberikan pertanyaan implementasi, dan diskusi kelompok berdasarkan jurnal ilmiah semuanya mendorong nalar kritis. Namun, memberikan penjelasan singkat tentang diakronik, sinkronik, kausalita, interpretasi, dan periodesasi cenderung bersifat pasif dan hanya menyampaikan informasi, bukan menumbuhkan nalar kritis secara langsung, sehingga ini adalah pengecualian.`
+            },
+            {
+                id: 15,
+                type: 'single-choice',
+                question: `Strategi yang dipilih oleh guru dalam materi <b class="text-blue-600">pendudukan Jepang di Indonesia</b> adalah dengan <b class="text-blue-600">bermain peran drama</b>. Setelah peserta didik memainkan perannya masing-masing, maka <b class="text-blue-600">refleksi sebagai tindak lanjut kegiatan pembelajaran yang paling tepat</b> adalah:`,
+                options: [
+                    "Peserta didik disuruh untuk menyusun ringkasan singkat tentang jalannya peristiwa pendudukan Jepang di Indonesia.",
+                    "Peserta didik diberikan kesempatan menuliskan satu pesan moral dan kesimpulan dari peristiwa yang diperankan.",
+                    "Peserta didik diberikan tugas menulis paper tentang apa yang telah dilakukan dalam kegiatan bermain peran.",
+                    "Peserta didik diberikan soal di akhir pembelajaran terkait dengan peristiwa pendudukan Jepang di Indonesia.",
+                    "Peserta didik diberikan soal essay tentang pengaruh pendudukan Jepang dan dampaknya terhadap kemerdekaan Bangsa Indonesia."
+                ],
+                correctAnswer: "Peserta didik diberikan kesempatan menuliskan satu pesan moral dan kesimpulan dari peristiwa yang diperankan.",
+                explanation: `Refleksi setelah kegiatan bermain peran drama bertujuan untuk menginternalisasi nilai-nilai dan pemahaman mendalam dari pengalaman tersebut. Memberikan kesempatan kepada peserta didik untuk menuliskan pesan moral dan kesimpulan dari peristiwa yang diperankan adalah tindak lanjut yang paling tepat. Ini mendorong mereka untuk merenungkan makna historis, memahami dampak emosional, dan mengambil pelajaran dari peristiwa tersebut secara personal, yang merupakan esensi dari refleksi dalam pembelajaran berbasis pengalaman. Pilihan lain lebih berfokus pada aspek kognitif murni (ringkasan, soal) atau tugas yang lebih formal (paper), yang kurang menangkap esensi refleksi pasca-drama.`
+            },
+            {
+                id: 16,
+                type: 'multiple-checkbox',
+                question: `Cara yang dilakukan oleh Guru Sejarah dalam meningkatkan kualitas proses pembelajaran pada <b class="text-blue-600">materi pemerintahan demokrasi liberal</b> dalam <b class="text-blue-600">refleksi hasil belajar</b> dengan melakukan tahapan:`,
+                options: [
+                    "Memberikan respons dari pertanyaan yang diajukan oleh peserta didik yang belum memahami tentang materi.",
+                    "Memberikan respons dengan memberikan pertanyaan pemantik untuk memancing ide dari peserta didik.",
+                    "Mengecek pemahaman dengan pertanyaan terkait materi dan memberikan respons dari pertanyaan peserta didik serta menyimpulkannya.",
+                    "Memberikan solusi dari hasil diskusi peserta didik dan memberikan tindak lanjut berupa tugas terkait materi demokrasi Liberal dan Terpimpin.",
+                    "Menyimpulkan hasil diskusi tentang materi kabinet penganut liberal dan pencapaiannya serta memberikan pertanyaan berupa soal untuk evaluasinya."
+                ],
+                correctAnswer: [
+                    "Mengecek pemahaman dengan pertanyaan terkait materi dan memberikan respons dari pertanyaan peserta didik serta menyimpulkannya.",
+                    "Memberikan solusi dari hasil diskusi peserta didik dan memberikan tindak lanjut berupa tugas terkait materi demokrasi Liberal dan Terpimpin.",
+                    "Menyimpulkan hasil diskusi tentang materi kabinet penganut liberal dan pencapaiannya serta memberikan pertanyaan berupa soal untuk evaluasinya."
+                ],
+                explanation: `Tidak ada pembahasan, jawaban ini sudah di revisi menjadi jawaban yang benar.`
+            },
+            {
+                id: 17,
+                type: 'single-choice',
+                question: `Guru mengajarkan materi tentang perbedaan antara bangunan peninggalan kebudayaan Hindu dan kebudayaan Budha di Indonesia. Salah satu <b class="text-blue-600">jenis penilaian yang tepat</b> adalah....`,
+                options: [
+                    "Penilaian tes berupa soal pilihan ganda tentang materi candi Hindu dan Budha di Indonesia.",
+                    "Penilaian tes berupa soal essay tentang ciri-ciri dan perbedaan bangunan Hindu dan Budha di Indonesia.",
+                    "Penilaian tes berupa menjodohkan pernyataan bangunan Hindu dan Budha.",
+                    "Penilaian non-tes dengan observasi diskusi Siswa tentang perbedaan antara candi Hindu dan Budha di Indonesia.",
+                    "Penilaian non-tes dengan memberikan pertanyaan lisan tentang bagaimana Ciri bangunan Hindu dan Ciri bangunan Budha."
+                ],
+                correctAnswer: "Penilaian non-tes dengan observasi diskusi Siswa tentang perbedaan antara candi Hindu dan Budha di Indonesia.",
+                explanation: `Untuk menilai pemahaman siswa tentang perbedaan bangunan peninggalan Hindu dan Buddha, penilaian non-tes melalui observasi diskusi adalah yang paling tepat. Metode ini memungkinkan guru untuk melihat secara langsung kemampuan siswa dalam menganalisis, membandingkan, dan mengkomunikasikan pemahaman mereka secara interaktif. Pilihan tes (pilihan ganda, esai, menjodohkan) lebih berfokus pada pengetahuan faktual atau hafalan, sementara pertanyaan lisan mungkin kurang mendalam dibandingkan diskusi.`
+            },
+            {
+                id: 18,
+                type: 'multiple-checkbox',
+                question: `Sebagian besar dari <b class="text-blue-600">peserta didik di suatu kelas memiliki gaya belajar kinestetik</b> dengan <b class="text-blue-600">aktivitas presentasi kelompok</b>. <b class="text-blue-600">Asesmen yang tepat</b> untuk mengevaluasi proses pembelajaran sejarah adalah:`,
+                options: [
+                    "Menilai keaktifan dalam diskusi dan kecakapan dalam berbicara di depan peserta didik lainnya.",
+                    "Menilai hasil laporan dan tampilan dari sajian power point yang dibuat oleh peserta didik.",
+                    "Menilai dari jawaban dari pertanyaan peserta lain dan kemampuan public speaking dalam proses diskusi.",
+                    "Menilai bagaimana sistematika laporan dan keruntutan dalam penyajian makalahnya.",
+                    "Menilai cara peserta didik dalam memoderatori kelompok dan bagaimana mencari sumber dalam menjawab pertanyaan dengan baik dan benar."
+                ],
+                correctAnswer: [
+                    "Menilai keaktifan dalam diskusi dan kecakapan dalam berbicara di depan peserta didik lainnya.",
+                    "Menilai dari jawaban dari pertanyaan peserta lain dan kemampuan public speaking dalam proses diskusi."
+                ],
+                explanation: `Untuk peserta didik dengan gaya belajar kinestetik yang terlibat dalam presentasi kelompok, asesmen yang tepat harus berfokus pada aktivitas dan interaksi langsung. Menilai keaktifan dalam diskusi dan kecakapan dalam berbicara di depan peserta didik lainnya, serta kemampuan public speaking dan respons terhadap pertanyaan secara langsung mengukur keterlibatan kinestetik dan keterampilan presentasi mereka. Pilihan lain lebih berfokus pada produk tertulis (laporan, power point, makalah) yang kurang relevan dengan gaya belajar kinestetik dan aktivitas presentasi lisan.`
+            },
+            {
+                id: 19,
+                type: 'single-choice',
+                question: `Guru telah selesai melakukan <b class="text-blue-600">penilaian dalam bentuk tes</b> kepada <b class="text-blue-600">peserta didik</b> dengan materi keunggulan kehidupan manusia zaman praaksara. Maka <b class="text-blue-600">tindak lanjut dari kegiatan penilaian</b> adalah:`,
+                options: [
+                    "Memberikan tugas tambahan mencari ciri-ciri manusia praaksara Indonesia untuk dikerjakan di rumah.",
+                    "Memberikan rewards atau hadiah kepada peserta didik yang bisa menjawab dengan tepat.",
+                    "Hasil penilaian memberikan informasi untuk menyusun strategi pembelajaran berikutnya.",
+                    "Memberikan hukuman kepada peserta didik yang mendapatkan skor rendah.",
+                    "Mengulang pembelajaran karena sebagian besar peserta didik mendapatkan skor yang rendah."
+                ],
+                correctAnswer: "Hasil penilaian memberikan informasi untuk menyusun strategi pembelajaran berikutnya.",
+                explanation: `Tindak lanjut dari kegiatan penilaian yang paling esensial adalah menggunakan hasil penilaian tersebut sebagai informasi untuk menyusun strategi pembelajaran berikutnya. Ini berarti guru menganalisis data penilaian untuk mengidentifikasi kekuatan dan kelemahan peserta didik, kemudian menyesuaikan metode, materi, atau pendekatan pengajaran agar lebih efektif di masa mendatang. Pilihan lain seperti memberikan tugas tambahan, rewards, hukuman, atau mengulang pembelajaran secara langsung mungkin merupakan bagian dari tindak lanjut, tetapi tujuan utamanya adalah untuk perbaikan proses pembelajaran secara keseluruhan berdasarkan informasi yang diperoleh dari penilaian.`
+            },
+            {
+                id: 20,
+                type: 'single-choice',
+                question: `Contoh <b class="text-blue-600">analisis perbaikan evaluasi berdasar refleksi</b> yang dilakukan oleh guru sejarah pada <b class="text-blue-600">materi kerajaan Islam di Indonesia</b> yang tepat, yaitu:`,
+                options: [
+                    "Memberikan tugas untuk meningkatkan pemahaman peserta didik tentang ciri-ciri bangunan Islam dan karakteristiknya dengan mereviu penelitian terkait.",
+                    "Menyimpulkan materi bersama peserta didik tentang ciri-ciri bangunan Islam dan karakteristiknya dengan pertanyaan secara acak.",
+                    "Melakukan reviu tentang pembahasan materi tentang ciri-ciri bangunan Islam dan karakteristiknya secara kelompok.",
+                    "Melaksanakan refleksi atas hasil penilaian akhir peserta didik pada akhir kompetensi inti dan kompetensi dasar tentang materi kerajaan Islam.",
+                    "Memberikan rewards dari hasil prestasi dari peserta didik yang berhasil memberikan ide, keaktifan, dan hasil penilaian yang terbaik."
+                ],
+                correctAnswer: "Memberikan tugas untuk meningkatkan pemahaman peserta didik tentang ciri-ciri bangunan Islam dan karakteristiknya dengan mereviu penelitian terkait.",
+                explanation: `Tidak ada pembahasan, karena jawaban ini sudah direvisi menjadi jawaban yang benar.`
+            },
+            {
+                id: 21,
+                type: 'single-choice',
+                question: `<b class="text-blue-600">Desain refleksi yang komprehensif</b> dalam suatu pembelajaran pada <b class="text-blue-600">materi kerajaan Hindu-Budha dan Islam di Indonesia</b> dapat dilakukan dengan:`,
+                options: [
+                    "Menanyakan kepada peserta didik tentang hal yang tidak dipahami selama ini terkait dengan materi kerajaan Hindu-Budha dan Islam.",
+                    "Menyusun daftar saran yang membangun dari peserta didik dan berusaha memperbaiki pembelajaran ke depan dengan desain ulang perangkat pembelajarannya.",
+                    "Mengamati keaktifan belajar peserta didik dan memberikan motivasi belajar di akhir pembelajaran.",
+                    "Memberikan kesempatan peserta didik untuk memberikan sarannya serta menindaklanjuti keberatan dengan kesepakatan yang saling menguntungkan.",
+                    "Menanyakan hal yang tidak dipahami peserta didik serta memberikan jawaban atas materi yang belum dipahaminya."
+                ],
+                correctAnswer: "Memberikan kesempatan peserta didik untuk memberikan sarannya serta menindaklanjuti keberatan dengan kesepakatan yang saling menguntungkan.",
+                explanation: `Tidak ada pembahasan, karena jawaban ini sudah di revisi menjadi jawaban yang benar.`
+            },
+            {
+                id: 22,
+                type: 'single-choice',
+                question: `Soal sama dengan soal no 21<br><b class="text-blue-600">Desain refleksi yang komprehensif</b> dalam suatu pembelajaran pada <b class="text-blue-600">materi kerajaan Hindu-Budha dan Islam di Indonesia</b> dapat dilakukan dengan:`,
+                options: [
+                    "Menanyakan kepada peserta didik tentang hal yang tidak dipahami selama ini terkait dengan materi kerajaan Hindu-Budha dan Islam.",
+                    "Menyusun daftar saran yang membangun dari peserta didik dan berusaha memperbaiki pembelajaran ke depan dengan desain ulang perangkat pembelajarannya.",
+                    "Mengamati keaktifan belajar peserta didik dan memberikan motivasi belajar di akhir pembelajaran.",
+                    "Memberikan kesempatan peserta didik untuk memberikan sarannya serta menindaklanjuti keberatan dengan kesepakatan yang saling menguntungkan.",
+                    "Menanyakan hal yang tidak dipahami peserta didik serta memberikan jawaban atas materi yang belum dipahaminya."
+                ],
+                correctAnswer: "Menanyakan hal yang tidak dipahami peserta didik serta memberikan jawaban atas materi yang belum dipahaminya.",
+                explanation: `Soal sama dengan soal no 21, namun jawabannya di bedakan, alasannya simple, karena dengan memilih jawaban yang berbeda kita memiliki kesempatan mendapatkan jawaban yang benar.`
+            },
+            {
+                id: 23,
+                type: 'single-choice',
+                question: `Pada <b class="text-blue-600">tujuan pembelajaran sejarah</b> yaitu <b class="text-blue-600">menganalisis serta mengevaluasi manusia dalam asal usul nenek moyang dan jalur rempah</b>, kegiatan dalam <b class="text-blue-600">penyampaian materi esensial yang harus disiapkan oleh guru sejarah</b> antara lain adalah:`,
+                options: [
+                    "Menyanyikan lagu nenek moyangku seorang pelaut, memberikan pertanyaan mengapa profesinya adalah nelayan.",
+                    "Informasi umum tentang rempah dan jalur rempah, dan mengapa menjadi magnet bagi bangsa Eropa.",
+                    "Penjelasan rempah-rempah dan kaitannya dengan kedatangan bangsa-bangsa terdahulu ke Nusantara.",
+                    "Disebutkan bangsa-bangsa yang masuk ke Indonesia dalam rangka berburu rempah-rempah.",
+                    "Guru menjelaskan tentang jalur sutera dan bagaimana jalur tersebut ditutup."
+                ],
+                correctAnswer: "Informasi umum tentang rempah dan jalur rempah, dan mengapa menjadi magnet bagi bangsa Eropa.",
+                explanation: `Jawaban ini di revisi, sehingga tidak ada pembahasan karena sudah diganti menjadi jawaban yang benar.`
+            },
+            {
+                id: 24,
+                type: 'single-choice',
+                question: `Berikut adalah beberapa tujuan pembelajaran:<br>Mengidentifikasi faktor-faktor yang mendorong keruntuhan Kerajaan Kutai, Kerajaan Tarumanegara, dan Kerajaan Sriwijaya.<br>Mendeskripsikan perkembangan Kerajaan Kutai, Kerajaan Tarumanegara, dan Kerajaan Sriwijaya.<br>Menjelaskan pengaruh letak geografis Kerajaan Kutai, Kerajaan Tarumanegara, dan Kerajaan Sriwijaya terhadap corak kehidupan di kerajaan tersebut.<br>Mengidentifikasi faktor-faktor yang mendorong perkembangan Kerajaan Kutai, Kerajaan Tarumanegara, dan Kerajaan Sriwijaya. <b class="text-blue-600">Urutan penyusunan tujuan pembelajaran yang mencerminkan proses berpikir kronologis</b> adalah:`,
+                options: [
+                    "4 2 1 3",
+                    "2 4 3 1",
+                    "1 2 4 3",
+                    "3 2 1 4",
+                    "1 2 3 4"
+                ],
+                correctAnswer: "2 4 3 1",
+                explanation: `Urutan penyusunan tujuan pembelajaran yang mencerminkan proses berpikir kronologis dan logis dalam sejarah dimulai dengan mendeskripsikan perkembangan suatu kerajaan (2), kemudian mengidentifikasi faktor-faktor yang mendorong perkembangannya (4). Setelah itu, penting untuk memahami pengaruh letak geografis terhadap corak kehidupan (3), yang seringkali menjadi faktor pendukung atau penghambat. Terakhir, barulah mengidentifikasi faktor-faktor yang mendorong keruntuhan (1), karena keruntuhan terjadi setelah perkembangan dan pengaruh faktor-faktor lainnya. Urutan ini mengikuti alur waktu dan sebab-akibat yang runtut.`
+            },
+            {
+                id: 25,
+                type: 'true-false',
+                question: `Berdasarkan <b class="text-blue-600">asesmen awal mayoritas peserta didik sudah bisa mengidentifikasi hasil-hasil kebudayaan pada masa praaksara di Indonesia</b>. Hanya ada beberapa peserta didik yang belum memahaminya. <b class="text-blue-600">Upaya yang semestinya dilakukan guru dalam pembelajaran</b> adalah:<br>Klik pilihan Benar atau Salah untuk setiap pernyataan yang sesuai!`,
+                statements: [
+                    "Memberikan pengayaan kepada seluruh peserta didik karena mayoritas sudah memiliki kemampuan mengidentifikasi hasil kebudayaan.",
+                    "Memberikan penjelasan tentang berbagai peninggalan masa praaksara bagi peserta didik yang belum memahami berbagai hasil budaya masa pra-aksara.",
+                    "Memberikan remedial bagi peserta didik yang belum memahami materi dengan cara memberikan soal-soal tambahan tentang peninggalan masa pra-aksara.",
+                    "Menjadikan peserta didik yang sudah memahami sebagai tutor untuk mendampingi teman-temannya yang masih belum paham tentang hasil kebudayaan masa pra-aksara.",
+                    "Memberikan kesempatan peserta didik yang sudah memahami untuk belajar mandiri membuat timeline hasil budaya masa pra-aksara dari periode ke periode."
+                ],
+                correctAnswers: {
+                    "Memberikan pengayaan kepada seluruh peserta didik karena mayoritas sudah memiliki kemampuan mengidentifikasi hasil kebudayaan.": "Salah",
+                    "Memberikan penjelasan tentang berbagai peninggalan masa praaksara bagi peserta didik yang belum memahami berbagai hasil budaya masa pra-aksara.": "Benar",
+                    "Memberikan remedial bagi peserta didik yang belum memahami materi dengan cara memberikan soal-soal tambahan tentang peninggalan masa pra-aksara.": "Salah",
+                    "Menjadikan peserta didik yang sudah memahami sebagai tutor untuk mendampingi teman-temannya yang masih belum paham tentang hasil kebudayaan masa pra-aksara.": "Benar",
+                    "Memberikan kesempatan peserta didik yang sudah memahami untuk belajar mandiri membuat timeline hasil budaya masa pra-aksara dari periode ke periode.": "Benar"
+                },
+                explanation: `Untuk siswa yang mayoritas sudah memahami, fokus harus pada pengayaan dan pemanfaatan potensi siswa yang sudah paham untuk membantu yang lain (tutor sebaya). Memberikan remedial atau penjelasan tambahan kepada semua siswa tidak efisien, dan memberikan tugas mandiri juga merupakan bentuk pengayaan.`
+            },
+            {
+                id: 26,
+                type: 'true-false',
+                question: `Pada <b class="text-blue-600">tujuan pembelajaran</b> "menganalisis lahirnya pergerakan Kebangsaan Indonesia" peserta didik sudah memenuhi kriteria ketercapaian tujuan pembelajaran. <b class="text-blue-600">Strategi pengayaan yang dilakukan oleh guru</b> adalah:<br>Klik pilihan Benar atau Salah untuk setiap pernyataan yang sesuai!`,
+                statements: [
+                    "Memberikan kesempatan untuk peserta didik menjadi tutor sebaya bagi temannya yang belum memenuhi KKTP (Kriteria Ketercapaian Tujuan Pembelajaran) dengan menerapkan model pembelajaran Jigsaw.",
+                    "Memberikan tugas proyek penelitian yang lebih mendalam tentang tokoh-tokoh penting, peristiwa, atau organisasi dalam pergerakan kebangsaan Indonesia.",
+                    "Memberikan bahan bacaan yang berasal jurnal ilmiah tentang politik Etis dan munculnya para cendekia di STOVIA yang akhirnya melahirkan Budi Utomo.",
+                    "Memberikan penjelasan tambahan tentang faktor-faktor internal dan eksternal yang mendorong lahirnya pergerakan kebangsaan di Indonesia pada awal abad.",
+                    "Memberikan studi kasus yang menantang di mana Siswa harus menganalisis hubungan pendidikan kedokteran dengan Budi Utomo."
+                ],
+                correctAnswers: {
+                    "Memberikan kesempatan untuk peserta didik menjadi tutor sebaya bagi temannya yang belum memenuhi KKTP (Kriteria Ketercapaian Tujuan Pembelajaran) dengan menerapkan model pembelajaran Jigsaw.": "Salah",
+                    "Memberikan tugas proyek penelitian yang lebih mendalam tentang tokoh-tokoh penting, peristiwa, atau organisasi dalam pergerakan kebangsaan Indonesia.": "Benar",
+                    "Memberikan bahan bacaan yang berasal jurnal ilmiah tentang politik Etis dan munculnya para cendekia di STOVIA yang akhirnya melahirkan Budi Utomo.": "Benar",
+                    "Memberikan penjelasan tambahan tentang faktor-faktor internal dan eksternal yang mendorong lahirnya pergerakan kebangsaan di Indonesia pada awal abad.": "Salah",
+                    "Memberikan studi kasus yang menantang di mana Siswa harus menganalisis hubungan pendidikan kedokteran dengan Budi Utomo.": "Benar"
+                },
+                explanation: `Tidak ada pembahasan, jawaban ini sudah direvisi menjadi jawaban yang benar.`
+            },
+            {
+                id: 27,
+                type: 'single-choice',
+                question: `Pada <b class="text-blue-600">tujuan</b> "menuliskan biografi tokoh seputar proklamasi kemerdekaan" mayoritas peserta didik masih belum memenuhi kriteria ketercapaian tujuan. <b class="text-blue-600">Strategi yang dilakukan guru untuk merespons hal tersebut</b> adalah:`,
+                options: [
+                    "Guru melakukan remidi dengan memberikan contoh-contoh biografi tokoh yang baik dan membahas elemen-elemen penting yang harus ada dalam biografi tokoh seputar Proklamasi Kemerdekaan Indonesia.",
+                    "Guru memanfaatkan model pembelajaran jigsaw dengan membentuk kelompok ahli dan kelompok asal. Kelompok ahli akan menjadi tutor sebaya bagi peserta didik yang belum memenuhi kriteria.",
+                    "Guru menugaskan peserta didik untuk mencari data-data di internet dan menyalin berbagai informasi tentang biografi pahlawan nasional untuk memudahkan mereka menyusun biografi.",
+                    "Guru mengganti tujuan pembelajaran dan disesuaikan dengan kemampuan peserta didik, sehingga mereka tidak perlu menyusun biografi tentang tokoh seputar Proklamasi Kemerdekaan Indonesia."
+                ],
+                correctAnswer: "Guru melakukan remidi dengan memberikan contoh-contoh biografi tokoh yang baik dan membahas elemen-elemen penting yang harus ada dalam biografi tokoh seputar Proklamasi Kemerdekaan Indonesia.",
+                explanation: `Ketika mayoritas peserta didik belum memenuhi kriteria ketercapaian tujuan, strategi yang paling tepat adalah melakukan remidi yang terfokus. Memberikan contoh biografi yang baik dan membahas elemen-elemen pentingnya secara langsung mengatasi kesenjangan pemahaman dan keterampilan yang dibutuhkan untuk mencapai tujuan "menuliskan biografi". Pilihan lain kurang tepat karena: model jigsaw lebih untuk pengayaan atau kolaborasi awal, menugaskan penyalinan tidak mengembangkan keterampilan menulis biografi, dan mengganti tujuan pembelajaran berarti menghindari masalah alih-alih mengatasinya.`
+            },
+            {
+                id: 28,
+                type: 'single-choice',
+                question: `Di daerah Pariaman, Sumatera Barat, setiap tahun diadakan acara Tabuik untuk memperingati hari Asyura. Dari peristiwa tersebut, <b class="text-blue-600">konten yang dapat dikembangkan dalam pembelajaran sejarah</b> adalah:`,
+                options: [
+                    "Menugaskan peserta didik untuk melakukan studi lapangan pada saat tradisi Tabuik dilaksanakan di Pariaman.",
+                    "Mengembangkan materi yang menghubungkan antara teori Persia dalam proses Islamisasi di Indonesia.",
+                    "Mengembangkan infografik yang berisi konten tentang kerajaan-kerajaan Islam yang berkembang wilayah Indonesia.",
+                    "Memberi penugasan kepada peserta didik untuk mengidentifikasi nilai-nilai sejarah yang terkandung pada tradisi Tabuik.",
+                    "Mengembangkan bahan ajar yang berisi tokoh-tokoh dalam Islamisasi di daerah Pariaman untuk pengayaan peserta didik."
+                ],
+                correctAnswer: "Mengembangkan materi yang menghubungkan antara teori Persia dalam proses Islamisasi di Indonesia.",
+                explanation: `Tidak ada pembahasan, Jawaban ini sudah direvisi.`
+            },
+            {
+                id: 29,
+                type: 'single-choice',
+                question: `Berdasarkan <b class="text-blue-600">asesmen awal, 75% peserta didik memiliki gaya belajar visual dan 25% memiliki gaya belajar auditori</b>. Pada <b class="text-blue-600">pembelajaran materi kerajaan-kerajaan Islam di Indonesia</b>, <b class="text-blue-600">sumber belajar yang sesuai untuk kebutuhan peserta didik</b> adalah ....`,
+                options: [
+                    "Menggunakan foto-foto tentang berbagai peninggalan kerajaan Islam yang ada di Indonesia.",
+                    "Memanfaatkan infografik tentang tokoh penyebar Islam di Indonesia dan dipadukan dengan story telling oleh guru.",
+                    "Memanfaatkan video Youtube tentang masuknya Islam ke Indonesia untuk menggantikan pemaparan guru.",
+                    "Menggunakan podcast yang bercerita tentang berbagai kisah kerajaan-kerajaan Islam di Indonesia dalam pembelajaran.",
+                    "Memanfaatkan pengakuan dari pelaku sejarah dan dipadukan dengan video tentang peninggalan Islam di Indonesia."
+                ],
+                correctAnswer: "Memanfaatkan infografik tentang tokoh penyebar Islam di Indonesia dan dipadukan dengan story telling oleh guru.",
+                explanation: `Dengan mayoritas peserta didik memiliki gaya belajar visual (75%) dan sebagian kecil auditori (25%), sumber belajar yang sesuai harus mengakomodasi keduanya. Memanfaatkan infografik sangat efektif untuk peserta didik visual karena menyajikan informasi secara grafis dan ringkas. Memadukannya dengan story telling oleh guru akan memenuhi kebutuhan peserta didik auditori, menciptakan pengalaman belajar yang komprehensif dan menarik bagi kedua kelompok gaya belajar tersebut. Pilihan lain cenderung hanya fokus pada satu gaya belajar atau kurang optimal dalam memadukan keduanya.`
+            },
+            {
+                id: 30,
+                type: 'single-choice',
+                question: `Di sebuah kelas, terdapat <b class="text-blue-600">peserta didik yang lamban belajar (slow learner)</b>. Pada <b class="text-blue-600">materi pemerintahan "asal usul nenek moyang Bangsa Indonesia"</b>, <b class="text-blue-600">bahan ajar yang sesuai untuk peserta didik</b> adalah....`,
+                options: [
+                    "Lembar kerja peserta didik yang berisi materi singkat tentang asal usul nenek moyang Indonesia.",
+                    "Cerita bergambar tentang berbagai hasil kebudayaan masyarakat Indonesia di masa pra-aksara.",
+                    "Gambar-gambar tentang berbagai candi dan prasasti yang ada di Indonesia sebagai peninggalan sejarah.",
+                    "Video dokumenter tentang Museum Purbakala Sangiran yang berisi koleksi fosil manusia purba.",
+                    "Atlas Sejarah yang berisi peta-peta persebaran fosil dinosaurus dan hewan purba di dunia."
+                ],
+                correctAnswer: "Cerita bergambar tentang berbagai hasil kebudayaan masyarakat Indonesia di masa pra-aksara.",
+                explanation: `Untuk peserta didik yang lamban belajar (slow learner), bahan ajar harus disajikan dalam format yang sederhana, konkret, dan menarik secara visual. Cerita bergambar sangat sesuai karena menggabungkan narasi dengan visual, memudahkan pemahaman konsep yang kompleks dan menjaga minat belajar. Pilihan lain seperti lembar kerja singkat mungkin kurang menarik, gambar candi/prasasti terlalu spesifik, video dokumenter mungkin terlalu cepat, dan atlas dinosaurus tidak relevan dengan materi asal usul nenek moyang manusia.`
+            },
+            {
+                id: 31,
+                type: 'single-choice',
+                question: `SOAL 31 SAMA DENGAN SOAL NO 30<br>Di sebuah kelas, terdapat <b class="text-blue-600">peserta didik yang lamban belajar (slow learner)</b>. Pada <b class="text-blue-600">materi pemerintahan "asal usul nenek moyang Bangsa Indonesia"</b>, <b class="text-blue-600">bahan ajar yang sesuai untuk peserta didik</b> adalah....`,
+                options: [
+                    "Lembar kerja peserta didik yang berisi materi singkat tentang asal usul nenek moyang Indonesia.",
+                    "Cerita bergambar tentang berbagai hasil kebudayaan masyarakat Indonesia di masa pra-aksara.",
+                    "Gambar-gambar tentang berbagai candi dan prasasti yang ada di Indonesia sebagai peninggalan sejarah.",
+                    "Video dokumenter tentang Museum Purbakala Sangiran yang berisi koleksi fosil manusia purba.",
+                    "Atlas Sejarah yang berisi peta-peta persebaran fosil dinosaurus dan hewan purba di dunia."
+                ],
+                correctAnswer: "Cerita bergambar tentang berbagai hasil kebudayaan masyarakat Indonesia di masa pra-aksara.",
+                explanation: `Untuk peserta didik yang lamban belajar (slow learner), bahan ajar harus disajikan dalam format yang sederhana, konkret, dan menarik secara visual. Cerita bergambar sangat sesuai karena menggabungkan narasi dengan visual, memudahkan pemahaman konsep yang kompleks dan menjaga minat belajar. Pilihan lain seperti lembar kerja singkat mungkin kurang menarik, gambar candi/prasasti terlalu spesifik, video dokumenter mungkin terlalu cepat, dan atlas dinosaurus tidak relevan dengan materi asal usul nenek moyang manusia.`
+            },
+            {
+                id: 32,
+                type: 'single-choice',
+                question: `Pada kelas X terdapat <b class="text-blue-600">tujuan pembelajaran</b> "menganalisis proses penelitian sejarah." <b class="text-blue-600">Materi esensial yang sesuai</b> adalah:`,
+                options: [
+                    "Konsep perubahan dan keberlanjutan dalam ilmu sejarah.",
+                    "Pengertian sejarah sebagai ilmu dan sebagai seni.",
+                    "Konsep berpikir sinkronis dan diakronis.",
+                    "Periodisasi dan konsep kronologis dalam sejarah.",
+                    "Jenis dan karakteristik sumber sejarah."
+                ],
+                correctAnswer: "Jenis dan karakteristik sumber sejarah.",
+                explanation: `Untuk menganalisis proses penelitian sejarah, materi esensial yang sesuai adalah jenis dan karakteristik sumber sejarah. Penelitian sejarah sangat bergantung pada sumber-sumber yang digunakan, dan pemahaman tentang jenis serta karakteristiknya (misalnya, primer, sekunder, lisan, tertulis, artefak) adalah fundamental untuk melakukan penelitian yang valid dan akurat. Konsep-konsep lain seperti perubahan dan keberlanjutan, sejarah sebagai ilmu/seni, sinkronis/diakronis, serta periodisasi/kronologis adalah bagian dari berpikir sejarah, tetapi "jenis dan karakteristik sumber sejarah" adalah inti dari "proses penelitian" itu sendiri.`
+            },
+            {
+                id: 33,
+                type: 'multiple-checkbox',
+                question: `Pembelajaran sejarah berperan mengembangkan <b class="text-blue-600">konsep diakronis</b> tentang peristiwa masa lalu. <b class="text-blue-600">Strategi yang tepat untuk mengukurnya</b> adalah:`,
+                options: [
+                    "Membuat garis waktu untuk menerangkan tentang rangkaian peristiwa menjelang Proklamasi Kemerdekaan Indonesia.",
+                    "Melakukan pameran perkembangan zaman batu dari waktu ke waktu.",
+                    "Menyusun timeline tentang peristiwa-peristiwa perang kemerdekaan di masa Revolusi.",
+                    "Membuat kajian dokumen tentang dampak tanam paksa terhadap ekonomi Hindia Belanda.",
+                    "Menyusun portofolio tentang produk-produk yang dihasilkan oleh peserta didik tentang sejarah."
+                ],
+                correctAnswer: [
+                    "Membuat garis waktu untuk menerangkan tentang rangkaian peristiwa menjelang Proklamasi Kemerdekaan Indonesia.",
+                    "Melakukan pameran perkembangan zaman batu dari waktu ke waktu.",
+                    "Menyusun timeline tentang peristiwa-peristiwa perang kemerdekaan di masa Revolusi."
+                ],
+                explanation: `Konsep diakronis dalam sejarah berkaitan dengan pemahaman peristiwa secara berurutan dalam rentang waktu. Oleh karena itu, strategi yang tepat untuk mengukurnya adalah dengan meminta peserta didik untuk membuat representasi visual atau naratif yang menunjukkan urutan waktu. Membuat garis waktu, melakukan pameran perkembangan zaman batu dari waktu ke waktu, dan menyusun timeline adalah aktivitas yang secara langsung mengukur kemampuan peserta didik dalam memahami dan merekonstruksi kronologi peristiwa. Pilihan lain seperti kajian dokumen atau penyusunan portofolio lebih berfokus pada analisis tematik atau pengumpulan hasil karya, bukan pada pemahaman diakronis secara spesifik.`
+            },
+            {
+                id: 34,
+                type: 'single-choice',
+                question: `Perhatikan beberapa sumber belajar di bawah ini! (1) Museum Sangiran (2) Replika alat batu (3) Fosil binatang purba (4) Peta persebaran manusia purba (5) Foto Homo Sapiens <b class="text-blue-600">Sumber belajar yang tepat untuk meningkatkan motivasi belajar</b> pada <b class="text-blue-600">materi tentang asal usul nenek moyang Bangsa Indonesia</b> adalah:`,
+                options: [
+                    "1 2 3",
+                    "1 3 5",
+                    "2 3 4",
+                    "2 4 5",
+                    "3 4 5"
+                ],
+                correctAnswer: "2 4 5", // This refers to the options in the original text, need to map them
+                explanation: `Untuk meningkatkan motivasi belajar pada materi asal usul nenek moyang Bangsa Indonesia, sumber belajar yang paling tepat adalah yang konkret, visual, dan relevan langsung dengan manusia purba. Replika alat batu (2) memberikan pengalaman taktil dan visual tentang kehidupan purba. Peta persebaran manusia purba (4) membantu memvisualisasikan migrasi dan lokasi penemuan. Foto Homo Sapiens (5) secara langsung menampilkan subjek materi. Kombinasi ini lebih efektif dalam membangkitkan minat dan pemahaman dibandingkan dengan fosil binatang purba yang kurang spesifik pada manusia atau Museum Sangiran yang mungkin tidak selalu dapat diakses langsung.`
+            },
+            {
+                id: 35,
+                type: 'single-choice',
+                question: `<b class="text-blue-600">Upaya yang tepat untuk mengembangkan literasi digital peserta didik</b> pada <b class="text-blue-600">materi tentang Pergerakan Nasional di Indonesia</b> adalah:`,
+                options: [
+                    "Memanfaatkan sejarah lisan untuk mewawancarai saksi sejarah.",
+                    "Memanfaatkan sumber-sumber primer berupa foto organisasi pergerakan.",
+                    "Melakukan studi dokumen untuk meneliti berdirinya Budi Utomo.",
+                    "Melakukan virtual tour di Museum Sumpah Pemuda.",
+                    "Memanfaatkan arsip digital tentang Perang Dunia II dan kekalahan Jepang."
+                ],
+                correctAnswer: "Melakukan virtual tour di Museum Sumpah Pemuda.",
+                explanation: `Tidak ada pembahasan, jawaban ini sudah direvisi menjadi jawaban yang benar!`
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        // userAnswers now stores selected options. For true-false, it will be an object {statement: "Benar"/"Salah"}
+        const userAnswers = {};
+        const questionStatus = {}; // Menyimpan status pertanyaan {questionId: 'answered'/'unanswered'}
+
+        const questionDisplay = document.getElementById('question-display');
+        const feedbackDisplay = document.getElementById('feedback-display');
+        const prevBtn = document.getElementById('prev-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const navigationGrid = document.getElementById('navigation-grid');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            let optionsHtml = '';
+
+            if (question.type === 'single-choice') {
+                optionsHtml = `
+                    <div class="options-container">
+                        ${question.options.map((option) => `
+                            <label>
+                                <input type="radio" name="question${question.id}" value="${option}" ${userAnswers[question.id] === option ? 'checked' : ''}>
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (question.type === 'multiple-checkbox') {
+                const selectedOptions = userAnswers[question.id] || [];
+                optionsHtml = `
+                    <div class="options-container">
+                        ${question.options.map((option) => `
+                            <label>
+                                <input type="checkbox" name="question${question.id}" value="${option}" ${selectedOptions.includes(option) ? 'checked' : ''}>
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (question.type === 'true-false') {
+                const selectedStatements = userAnswers[question.id] || {};
+                optionsHtml = `
+                    <div class="true-false-options-container">
+                        ${question.statements.map((statement, index) => `
+                            <div class="true-false-statement" data-statement="${statement}">
+                                <div class="statement-text">${statement}</div>
+                                <div class="tf-options">
+                                    <label>
+                                        <input type="radio" name="statement${question.id}_${index}" value="Benar" ${selectedStatements[statement] === 'Benar' ? 'checked' : ''}> Benar
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="statement${question.id}_${index}" value="Salah" ${selectedStatements[statement] === 'Salah' ? 'checked' : ''}> Salah
+                                    </label>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            questionDisplay.innerHTML = `
+                <p class="text-lg font-semibold text-gray-700 mb-4">Soal No. ${question.id}</p>
+                <div class="question-text">${question.question}</div>
+                ${optionsHtml}
+            `;
+
+            // Reset feedback
+            feedbackDisplay.classList.add('hidden');
+            feedbackDisplay.innerHTML = '';
+
+            // Update button states
+            prevBtn.disabled = currentQuestionIndex === 0;
+            prevBtn.classList.toggle('btn-disabled', currentQuestionIndex === 0);
+
+            nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+            nextBtn.classList.toggle('btn-disabled', currentQuestionIndex === questions.length - 1);
+
+            // Enable/disable check button based on selection
+            updateCheckButtonState();
+
+            // Add event listeners for inputs
+            if (question.type === 'single-choice') {
+                document.querySelectorAll(`input[name="question${question.id}"]`).forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        userAnswers[question.id] = radio.value;
+                        questionStatus[question.id] = 'answered';
+                        updateCheckButtonState();
+                        updateNavigationButtons();
+                    });
+                });
+            } else if (question.type === 'multiple-checkbox') {
+                document.querySelectorAll(`input[name="question${question.id}"]`).forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        const checkedBoxes = Array.from(document.querySelectorAll(`input[name="question${question.id}"]:checked`)).map(cb => cb.value);
+                        userAnswers[question.id] = checkedBoxes;
+                        questionStatus[question.id] = checkedBoxes.length > 0 ? 'answered' : 'unanswered';
+                        updateCheckButtonState();
+                        updateNavigationButtons();
+                    });
+                });
+            } else if (question.type === 'true-false') {
+                question.statements.forEach((statement, index) => {
+                    document.querySelectorAll(`input[name="statement${question.id}_${index}"]`).forEach(radio => {
+                        radio.addEventListener('change', () => {
+                            if (!userAnswers[question.id]) {
+                                userAnswers[question.id] = {};
+                            }
+                            userAnswers[question.id][statement] = radio.value;
+                            // Check if all statements have been answered for true-false
+                            const allStatementsAnswered = question.statements.every((s, i) => {
+                                return document.querySelector(`input[name="statement${question.id}_${i}"]:checked`);
+                            });
+                            questionStatus[question.id] = allStatementsAnswered ? 'answered' : 'unanswered';
+                            updateCheckButtonState();
+                            updateNavigationButtons();
+                        });
+                    });
+                });
+            }
+
+            updateNavigationButtons();
+        }
+
+        function updateCheckButtonState() {
+            const question = questions[currentQuestionIndex];
+            let isAnswerSelected = false;
+
+            if (question.type === 'single-choice') {
+                isAnswerSelected = document.querySelector(`input[name="question${question.id}"]:checked`);
+            } else if (question.type === 'multiple-checkbox') {
+                isAnswerSelected = Array.from(document.querySelectorAll(`input[name="question${question.id}"]:checked`)).length > 0;
+            } else if (question.type === 'true-false') {
+                isAnswerSelected = question.statements.every((s, i) => {
+                    return document.querySelector(`input[name="statement${question.id}_${i}"]:checked`);
+                });
+            }
+
+            checkBtn.disabled = !isAnswerSelected;
+            checkBtn.classList.toggle('btn-disabled', !isAnswerSelected);
+        }
+
+        function checkAnswer() {
+            const question = questions[currentQuestionIndex];
+            let isCorrect = false;
+            let feedbackHtml = '';
+
+            // Disable all inputs for the current question
+            if (question.type === 'single-choice' || question.type === 'multiple-checkbox') {
+                document.querySelectorAll(`input[name="question${question.id}"]`).forEach(input => {
+                    input.disabled = true;
+                });
+            } else if (question.type === 'true-false') {
+                question.statements.forEach((statement, index) => {
+                    document.querySelectorAll(`input[name="statement${question.id}_${index}"]`).forEach(radio => {
+                        radio.disabled = true;
+                    });
+                });
+            }
+            checkBtn.disabled = true;
+            checkBtn.classList.add('btn-disabled');
+
+            if (question.type === 'single-choice') {
+                const selectedOption = document.querySelector(`input[name="question${question.id}"]:checked`);
+                if (!selectedOption) {
+                    showMessageBox('Peringatan', 'Silakan pilih jawaban sebelum memeriksa.');
+                    return;
+                }
+                const selectedValue = selectedOption.value;
+                isCorrect = (selectedValue === question.correctAnswer);
+
+                document.querySelectorAll(`.options-container label`).forEach(label => {
+                    if (label.querySelector('input').value === question.correctAnswer) {
+                        label.classList.add('correct');
+                    } else if (label.querySelector('input').checked) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+            } else if (question.type === 'multiple-checkbox') {
+                const selectedOptions = Array.from(document.querySelectorAll(`input[name="question${question.id}"]:checked`)).map(cb => cb.value);
+                if (selectedOptions.length === 0) {
+                    showMessageBox('Peringatan', 'Silakan pilih setidaknya satu jawaban sebelum memeriksa.');
+                    return;
+                }
+
+                // Check if all correct answers are selected and no incorrect ones are selected
+                const allCorrectSelected = question.correctAnswer.every(ans => selectedOptions.includes(ans));
+                const noIncorrectSelected = selectedOptions.every(ans => question.correctAnswer.includes(ans));
+                isCorrect = allCorrectSelected && noIncorrectSelected;
+
+                document.querySelectorAll(`.options-container label`).forEach(label => {
+                    const optionValue = label.querySelector('input').value;
+                    if (question.correctAnswer.includes(optionValue)) {
+                        label.classList.add('correct');
+                    } else if (selectedOptions.includes(optionValue)) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+            } else if (question.type === 'true-false') {
+                let allStatementsAnswered = true;
+                let correctStatementsCount = 0;
+                let totalStatements = question.statements.length;
+
+                question.statements.forEach((statement, index) => {
+                    const selectedRadio = document.querySelector(`input[name="statement${question.id}_${index}"]:checked`);
+                    const statementElement = document.querySelector(`.true-false-statement[data-statement="${statement}"]`);
+
+                    if (!selectedRadio) {
+                        allStatementsAnswered = false;
+                        return;
+                    }
+
+                    const selectedAnswer = selectedRadio.value;
+                    const correctAnswer = question.correctAnswers[statement];
+
+                    if (selectedAnswer === correctAnswer) {
+                        statementElement.classList.add('correct-statement');
+                        correctStatementsCount++;
+                    } else {
+                        statementElement.classList.add('incorrect-statement');
+                    }
+                });
+
+                if (!allStatementsAnswered) {
+                    showMessageBox('Peringatan', 'Silakan jawab semua pernyataan Benar/Salah sebelum memeriksa.');
+                    return;
+                }
+
+                isCorrect = (correctStatementsCount === totalStatements);
+            }
+
+            if (isCorrect) {
+                feedbackDisplay.classList.remove('hidden', 'incorrect');
+                feedbackDisplay.classList.add('correct');
+                feedbackHtml = `<p class="font-bold text-lg mb-2">Jawaban Anda Benar!</p>`;
+            } else {
+                feedbackDisplay.classList.remove('hidden', 'correct');
+                feedbackDisplay.classList.add('incorrect');
+                feedbackHtml = `<p class="font-bold text-lg mb-2">Jawaban Anda Salah.</p>`;
+                if (question.type === 'single-choice') {
+                    feedbackHtml += `<p>Jawaban yang benar adalah: <b class="font-semibold">${question.correctAnswer}</b></p>`;
+                } else if (question.type === 'multiple-checkbox') {
+                    feedbackHtml += `<p>Jawaban yang benar adalah: <b class="font-semibold">${question.correctAnswer.join(', ')}</b></p>`;
+                } else if (question.type === 'true-false') {
+                    feedbackHtml += `<p>Pernyataan yang benar adalah:</p><ul>`;
+                    for (const statement in question.correctAnswers) {
+                        feedbackHtml += `<li>${statement}: <b>${question.correctAnswers[statement]}</b></li>`;
+                    }
+                    feedbackHtml += `</ul>`;
+                }
+            }
+            feedbackHtml += `<p>${question.explanation}</p>`;
+            feedbackDisplay.innerHTML = feedbackHtml;
+            feedbackDisplay.classList.remove('hidden');
+
+            updateNavigationButtons();
+        }
+
+        function navigateQuestion(direction) {
+            if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+            } else if (direction === 'next' && currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+            }
+            loadQuestion();
+        }
+
+        function createNavigationButtons() {
+            navigationGrid.innerHTML = '';
+            questions.forEach((q, index) => {
+                const navBtn = document.createElement('button');
+                navBtn.classList.add('nav-btn');
+                navBtn.innerText = q.id;
+                navBtn.addEventListener('click', () => {
+                    currentQuestionIndex = index;
+                    loadQuestion();
+                });
+                navigationGrid.appendChild(navBtn);
+            });
+        }
+
+        function updateNavigationButtons() {
+            const navButtons = navigationGrid.querySelectorAll('.nav-btn');
+            navButtons.forEach((btn, index) => {
+                const questionId = questions[index].id;
+                btn.classList.remove('active', 'answered');
+                if (index === currentQuestionIndex) {
+                    btn.classList.add('active');
+                }
+                if (questionStatus[questionId] === 'answered') {
+                    btn.classList.add('answered');
+                }
+            });
+        }
+
+        function submitQuiz() {
+            let correctCount = 0;
+            let unansweredCount = 0;
+            questions.forEach(q => {
+                if (q.type === 'single-choice') {
+                    if (userAnswers[q.id]) {
+                        if (userAnswers[q.id] === q.correctAnswer) {
+                            correctCount++;
+                        }
+                    } else {
+                        unansweredCount++;
+                    }
+                } else if (q.type === 'multiple-checkbox') {
+                    if (userAnswers[q.id] && userAnswers[q.id].length > 0) {
+                        const selected = userAnswers[q.id];
+                        const correct = q.correctAnswer;
+                        const allCorrectSelected = correct.every(ans => selected.includes(ans));
+                        const noIncorrectSelected = selected.every(ans => correct.includes(ans));
+                        if (allCorrectSelected && noIncorrectSelected) {
+                            correctCount++;
+                        }
+                    } else {
+                        unansweredCount++;
+                    }
+                } else if (q.type === 'true-false') {
+                    if (userAnswers[q.id] && Object.keys(userAnswers[q.id]).length === q.statements.length) {
+                        let statementCorrectCount = 0;
+                        q.statements.forEach(statement => {
+                            if (userAnswers[q.id][statement] === q.correctAnswers[statement]) {
+                                statementCorrectCount++;
+                            }
+                        });
+                        if (statementCorrectCount === q.statements.length) {
+                            correctCount++;
+                        }
+                    } else {
+                        unansweredCount++;
+                    }
+                }
+            });
+
+            const totalQuestions = questions.length;
+            const score = (correctCount / totalQuestions) * 100;
+
+            let message = `Anda telah menyelesaikan ujian.\n\n`;
+            message += `Jumlah soal: ${totalQuestions}\n`;
+            message += `Jawaban Benar: ${correctCount}\n`;
+            message += `Jawaban Salah: ${totalQuestions - correctCount - unansweredCount}\n`;
+            message += `Belum Dijawab: ${unansweredCount}\n\n`;
+            message += `Skor Anda: ${score.toFixed(2)}%`;
+
+            showMessageBox('Hasil Ujian', message);
+        }
+
+        // Event Listeners
+        prevBtn.addEventListener('click', () => navigateQuestion('prev'));
+        nextBtn.addEventListener('click', () => navigateQuestion('next'));
+        checkBtn.addEventListener('click', checkAnswer);
+        submitQuizBtn.addEventListener('click', submitQuiz);
+
+        // Initial load
+        createNavigationButtons();
+        loadQuestion();
+    </script>
+</body>
+</html>
