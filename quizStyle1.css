@@ -1,0 +1,53 @@
+   /* Gaya tambahan untuk keterangan jenis soal */
+        .soal-question-type {
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* gray-500 */
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-align: right; /* Menempatkan teks di kanan */
+        }
+
+        /* Revisi untuk tombol True/False */
+        .soal-tf-option {
+            padding: 0.5rem;
+            width: 50%;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            background-color: #ffffff;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            color: #1f2937; /* Mengatur warna teks menjadi gelap agar terlihat */
+        }
+
+        .soal-tf-option:hover:not(.selected):not(.disabled) {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .soal-tf-option.selected {
+            background-color: #e0f2fe;
+            border-color: #60a5fa;
+            font-weight: 600;
+            color: #1f2937; /* Memastikan teks berwarna gelap saat dipilih */
+        }
+
+        .soal-tf-option.correct {
+            background-color: #d1fae5;
+            border-color: #34d399;
+            font-weight: 600;
+        }
+
+        .soal-tf-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            font-weight: 600;
+        }
+
+        .soal-tf-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
