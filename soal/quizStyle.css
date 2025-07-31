@@ -1,22 +1,22 @@
 /* Mengatur box-sizing secara global untuk model kotak yang konsisten */
 html {
-    box-sizing: border-box;
+/*    box-sizing: border-box;
 }
 *, *::before, *::after {
     box-sizing: inherit;
 }
 
-/* Mengatur font Inter sebagai default */
-body {
+/* Pengaturan Body dihapus agar tidak bertabrakan dengan tema utama */
+/* body {
     font-family: 'Inter', sans-serif;
-    background-color: #f8fafc; /* Warna latar belakang sangat terang */
+    background-color: #f8fafc;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem; /* Padding global untuk body */
-    margin: 0; /* Pastikan tidak ada margin default */
-}
+    padding: 2rem;
+    margin: 0;
+} */
 
 /* Layout and Container */
 .soal-container-main {
@@ -32,16 +32,18 @@ body {
 
 /* Headings */
 .soal-quiz-title {
-    font-size: 2.25rem; /* text-4xl */
-    font-weight: 800; /* font-extrabold */
+    /* font-size dan font-weight dihapus agar mengikuti tema utama */
+    /* font-size: 2.25rem; */
+    /* font-weight: 800; */
     text-align: center;
     color: #1f2937; /* gray-800 */
     margin-bottom: 2.5rem; /* mb-10 */
 }
 
 .soal-question-heading {
-    font-size: 1.5rem; /* text-2xl */
-    font-weight: 700; /* font-bold */
+    /* font-size dan font-weight dihapus agar mengikuti tema utama */
+    /* font-size: 1.5rem; */
+    /* font-weight: 700; */
     color: #374151; /* gray-700 */
     margin-bottom: 1rem; /* mb-4 */
 }
@@ -56,11 +58,13 @@ body {
 }
 
 .soal-text-sm {
-    font-size: 0.875rem; /* text-sm */
+    /* font-size dihapus agar mengikuti tema utama */
+    /* font-size: 0.875rem; */
 }
 
 .soal-text-lg {
-    font-size: 1.125rem; /* text-lg */
+    /* font-size dihapus agar mengikuti tema utama */
+    /* font-size: 1.125rem; */
 }
 
 .soal-text-gray-700 {
@@ -79,7 +83,8 @@ body {
     color: #9ca3af;
 }
 
-.soal-font-extrabold {
+/* Font-weight dihapus agar mengikuti tema utama */
+/* .soal-font-extrabold {
     font-weight: 800;
 }
 
@@ -93,7 +98,7 @@ body {
 
 .soal-font-semibold {
     font-weight: 600;
-}
+} */
 
 /* Spacing */
 .soal-mb-10 {
@@ -232,13 +237,13 @@ body {
 .soal-answer-item.correct {
     border-color: #34d399;
     background-color: #d1fae5;
-    font-weight: 600;
+    /* font-weight dihapus */
 }
 
 .soal-answer-item.incorrect {
     border-color: #ef4444;
     background-color: #fee2e2;
-    font-weight: 600;
+    /* font-weight dihapus */
 }
 
 .soal-answer-item.disabled {
@@ -263,8 +268,9 @@ body {
     padding: 0.75rem 1rem;
     background-color: #f9fafb;
     text-align: left;
-    font-size: 0.75rem;
-    font-weight: 500;
+    /* font-size dan font-weight dihapus */
+    /* font-size: 0.75rem; */
+    /* font-weight: 500; */
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -289,8 +295,9 @@ body {
     transition: all 0.15s ease-in-out;
     cursor: pointer;
     background-color: #ffffff;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    /* font-size dan line-height dihapus */
+    /* font-size: 0.875rem; */
+    /* line-height: 1.25rem; */
 }
 
 .soal-tf-option:hover:not(.selected):not(.disabled) {
@@ -301,19 +308,19 @@ body {
 .soal-tf-option.selected {
     background-color: #e0f2fe;
     border-color: #60a5fa;
-    font-weight: 600;
+    /* font-weight dihapus */
 }
 
 .soal-tf-option.correct {
     background-color: #d1fae5;
     border-color: #34d399;
-    font-weight: 600;
+    /* font-weight dihapus */
 }
 
 .soal-tf-option.incorrect {
     background-color: #fee2e2;
     border-color: #ef4444;
-    font-weight: 600;
+    /* font-weight dihapus */
 }
 
 .soal-tf-option.disabled {
@@ -340,7 +347,8 @@ body {
     width: 100%;
     padding: 1rem;
     color: #ffffff;
-    font-weight: 700;
+    /* font-weight dihapus */
+    /* font-weight: 700; */
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
