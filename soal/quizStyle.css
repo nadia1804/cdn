@@ -1,0 +1,360 @@
+/* Mengatur box-sizing secara global untuk model kotak yang konsisten */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* Mengatur font Inter sebagai default */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc; /* Warna latar belakang sangat terang */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem; /* Padding global untuk body */
+    margin: 0; /* Pastikan tidak ada margin default */
+}
+
+/* Layout and Container */
+.soal-container-main {
+    max-width: 896px; /* max-w-4xl (56rem * 16px/rem) */
+    width: 100%; /* Memastikan lebar responsif */
+    margin: 0 auto;
+    padding: 2rem; /* Padding kontainer utama */
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    border: 1px solid #e2e8f0;
+}
+
+/* Headings */
+.soal-quiz-title {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 800; /* font-extrabold */
+    text-align: center;
+    color: #1f2937; /* gray-800 */
+    margin-bottom: 2.5rem; /* mb-10 */
+}
+
+.soal-question-heading {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: #374151; /* gray-700 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+/* Text styles */
+.soal-text-base-color {
+    color: #6b7280; /* gray-500 */
+}
+
+.soal-text-center {
+    text-align: center;
+}
+
+.soal-text-sm {
+    font-size: 0.875rem; /* text-sm */
+}
+
+.soal-text-lg {
+    font-size: 1.125rem; /* text-lg */
+}
+
+.soal-text-gray-700 {
+    color: #374151;
+}
+
+.soal-text-gray-800 {
+    color: #1f2937;
+}
+
+.soal-text-gray-500 {
+    color: #6b7280;
+}
+
+.soal-text-gray-400 {
+    color: #9ca3af;
+}
+
+.soal-font-extrabold {
+    font-weight: 800;
+}
+
+.soal-font-bold {
+    font-weight: 700;
+}
+
+.soal-font-medium {
+    font-weight: 500;
+}
+
+.soal-font-semibold {
+    font-weight: 600;
+}
+
+/* Spacing */
+.soal-mb-10 {
+    margin-bottom: 2.5rem;
+}
+
+.soal-mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.soal-mb-4 {
+    margin-bottom: 1rem;
+}
+
+.soal-mt-2 {
+    margin-top: 0.5rem;
+}
+
+.soal-mt-4 {
+    margin-top: 1rem;
+}
+
+.soal-mt-6 {
+    margin-top: 1.5rem;
+}
+
+.soal-mt-10 {
+    margin-top: 2.5rem;
+}
+
+.soal-ml-4 {
+    margin-left: 1rem;
+}
+
+.soal-py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.soal-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.soal-p-6 {
+    padding: 1.5rem;
+}
+
+.soal-p-2 {
+    padding: 0.5rem;
+}
+
+/* Boxes and Cards */
+.soal-quiz-section {
+    margin-bottom: 3rem; /* Jarak antar soal */
+    padding: 1.5rem; /* Padding di dalam setiap bagian soal */
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.soal-feedback-box {
+    display: none;
+    transition: all 0.3s ease-in-out;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: #1f2937;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.soal-feedback-box.soal-bg-green-100 {
+    background-color: #d1fae5;
+    border-color: #34d399;
+    color: #047857;
+}
+
+.soal-feedback-box.soal-bg-red-100 {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+}
+
+/* Lists */
+.soal-ordered-list {
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.soal-ordered-list-item {
+    margin-bottom: 0.25rem;
+}
+
+.soal-space-y-3 > *:not(:first-child) {
+    margin-top: 0.75rem; /* space-y-3 */
+}
+
+/* Answer Lists - Remove default bullet points and add margin-top */
+.soal-answer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 1.5rem; /* Menambahkan margin-top di sini */
+}
+
+/* Answer Items (for single/multiple choice) */
+.soal-answer-item {
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    padding: 0.75rem; /* p-3 */
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    width: 100%; /* Ini akan bekerja dengan box-sizing: border-box */
+}
+
+.soal-answer-item:hover:not(.selected):not(.disabled) {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.soal-answer-item.selected {
+    background-color: #e0f2fe;
+    border-color: #60a5fa;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+}
+
+.soal-answer-item.correct {
+    border-color: #34d399;
+    background-color: #d1fae5;
+    font-weight: 600;
+}
+
+.soal-answer-item.incorrect {
+    border-color: #ef4444;
+    background-color: #fee2e2;
+    font-weight: 600;
+}
+
+.soal-answer-item.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Table styles for True/False */
+.soal-overflow-x-auto {
+    overflow-x: auto;
+}
+
+.soal-quiz-table {
+    min-width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    border-collapse: collapse;
+}
+
+.soal-table-header {
+    padding: 0.75rem 1rem;
+    background-color: #f9fafb;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.soal-table-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #374151;
+}
+
+.soal-statement-row:last-child .soal-table-cell {
+    border-bottom: none;
+}
+
+.soal-tf-option {
+    padding: 0.5rem;
+    width: 50%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    background-color: #ffffff;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.soal-tf-option:hover:not(.selected):not(.disabled) {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.soal-tf-option.selected {
+    background-color: #e0f2fe;
+    border-color: #60a5fa;
+    font-weight: 600;
+}
+
+.soal-tf-option.correct {
+    background-color: #d1fae5;
+    border-color: #34d399;
+    font-weight: 600;
+}
+
+.soal-tf-option.incorrect {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    font-weight: 600;
+}
+
+.soal-tf-option.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Flexbox utilities */
+.soal-flex {
+    display: flex;
+}
+
+.soal-justify-center {
+    justify-content: center;
+}
+
+.soal-space-x-2 > *:not(:first-child) {
+    margin-left: 0.5rem;
+}
+
+/* Custom button color */
+.soal-btn-custom-purple {
+    background-color: #7579E7;
+    width: 100%;
+    padding: 1rem;
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    margin-top: 1.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.soal-btn-custom-purple:hover:not([disabled]) {
+    background-color: #6569D7;
+    opacity: 0.9;
+}
+
+.soal-btn-custom-purple[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
